@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 
+import 'cadastro.dart';
 import 'taskBoards.dart';
 
 class Login extends StatefulWidget {
-  const Login({super.key});
+  final Future<Database> bancoDeDados;
+
+  const Login({Key? key, required this.bancoDeDados}) : super(key: key);
 
   @override
   State<Login> createState() => _LoginState();
@@ -186,8 +190,14 @@ class _LoginState extends State<Login> {
                         },
                         child: GestureDetector(
                           onTap: () {
-                            // Adicione a navegação para a tela de criação de conta
+                            // TODO: Criar a página de cadastro
                             print("Criar uma Conta clicado");
+
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const Cadastro()),
+                              ); 
+
                           },
                           child: Text(
                             'Novo Usuário? Criar uma Conta',
@@ -258,10 +268,13 @@ class _LoginState extends State<Login> {
 
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const TaskBoards()),
-                            );     
+                            bool validador = _login();
+                            if (validador) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const TaskBoards()),
+                              );   
+                            }  
                           },
                           style: buttonStyle,
                           child: Text('Login', style: textStyleButtonText)
@@ -279,7 +292,7 @@ class _LoginState extends State<Login> {
       ),
     );
   }
-  void _login() {
+  bool _login() {
     String username = _usernameController.text;
     String password = _passwordController.text;
 
@@ -288,6 +301,7 @@ class _LoginState extends State<Login> {
     print("Username: $username, Password: $password");
 
     // Adicione a navegação para a próxima tela ou lógica de autenticação aqui
+    return true;
   }
   
   
