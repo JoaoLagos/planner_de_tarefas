@@ -24,7 +24,7 @@ class _TaskBoardsState extends State<TaskBoards> {
         children: [
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Image.asset(
-            "../../assets/user.png",
+            "assets/user.png",
             height: 90,
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
@@ -69,7 +69,7 @@ class _TaskBoardsState extends State<TaskBoards> {
 
   Widget cardWidget(String titulo, IconData icon, Color cor) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(8.0),
       child:Container(
         width: MediaQuery.of(context).size.width * 0.4, 
         height: MediaQuery.of(context).size.height * 0.20, 

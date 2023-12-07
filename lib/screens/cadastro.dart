@@ -37,8 +37,6 @@ class _CadastroState extends State<Cadastro> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // ... Seu código existente ...
-
                   Container(
                     width: MediaQuery.of(context).size.width * 0.6,
                     height: MediaQuery.of(context).size.height * 0.7,
@@ -174,7 +172,7 @@ class _CadastroState extends State<Cadastro> {
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
 
-    // TODO: Adicionar lógica para processar o formulário de cadastro
+    // TODO: Adicionar lógica para processar o formulário de cadastro e adicionar no banco de dados
 
     print('Usuário: $username');
     print('Email: $email');

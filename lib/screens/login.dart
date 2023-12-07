@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
 import 'cadastro.dart';
 import 'taskBoards.dart';
@@ -26,7 +27,7 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    // Inicialize o estilo do texto aqui
+
     textStyleCadastrar = const TextStyle(
       color: Colors.white,
       decoration: TextDecoration.underline,
@@ -57,7 +58,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       //backgroundColor: Color.fromARGB(255, 236, 234, 248),
-      body: SingleChildScrollView( //Scroll para quando o usuário for digitar o apelido, pois ao aparecer o teclado a tecla fica overflow
+      body: SingleChildScrollView( 
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Center(
@@ -66,10 +67,10 @@ class _LoginState extends State<Login> {
               
               children: [
                 Image.asset(
-                  "../../assets/logo.png", 
+                  "assets/logo.png", 
                   height: MediaQuery.of(context).size.height * 0.2, 
                   
-                  fit: BoxFit.contain, // Ajusta a imagem
+                  fit: BoxFit.contain, 
                 ),
 
                 const SizedBox(height: 10),
@@ -77,10 +78,10 @@ class _LoginState extends State<Login> {
                 const Text(
                   "PLANNER",
                   style: TextStyle(
-                    color: roxo,  // Cor roxa
-                    fontWeight: FontWeight.bold,  // Negrito
-                    fontSize: 35,  // Tamanho da fonte grande
-                    fontFamily: "CupertinoIcons",  // Substitua "Lobster" pela fonte caligráfica desejada
+                    color: roxo,  
+                    fontWeight: FontWeight.bold,  
+                    fontSize: 35,  
+                    fontFamily: "CupertinoIcons",  
                   ),
                 ),
 
@@ -105,7 +106,6 @@ class _LoginState extends State<Login> {
                     
                     ),
                   ),
-                  //padding: const EdgeInsets.all(16.0),
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -190,8 +190,6 @@ class _LoginState extends State<Login> {
                         },
                         child: GestureDetector(
                           onTap: () {
-                            // TODO: Criar a página de cadastro
-                            print("Criar uma Conta clicado");
 
                             Navigator.push(
                                 context,
@@ -300,7 +298,7 @@ class _LoginState extends State<Login> {
     // Neste exemplo, apenas mostramos uma mensagem no console
     print("Username: $username, Password: $password");
 
-    // Adicione a navegação para a próxima tela ou lógica de autenticação aqui
+    // TODO: Adicione a lógica de autenticação aqui
     return true;
   }
   
