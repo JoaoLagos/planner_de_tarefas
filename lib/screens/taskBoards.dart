@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class TaskBoards extends StatefulWidget {
   final String userName;
+
   const TaskBoards({Key? key, required this.userName}) : super(key: key);
 
   @override
@@ -23,22 +24,25 @@ class _TaskBoardsState extends State<TaskBoards> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+
           Image.asset(
             "assets/user.png",
             height: 90,
           ),
+
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
 
           Text(
             "Bem-vindo, ${widget.userName}",
             style: const TextStyle(
-              fontSize: 20.0, // Defina o tamanho da fonte desejado
-              fontWeight: FontWeight.bold, // Pode ser alterado para FontWeight.normal, FontWeight.w500, etc.
-              color: Colors.black, // Defina a cor do texto conforme necessário
-              // Adicione outras propriedades de estilo conforme necessário
+              fontSize: 20.0, 
+              fontWeight: FontWeight.bold, 
+              color: Colors.black, 
             ),
           ),
+
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
 
           Row(
@@ -48,6 +52,7 @@ class _TaskBoardsState extends State<TaskBoards> {
               cardWidget("Saúde", Icons.health_and_safety, const Color(0xFFB2E061)),
             ],
           ),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -55,6 +60,7 @@ class _TaskBoardsState extends State<TaskBoards> {
               cardWidget("Estudo", Icons.book, const Color(0xFFFFB55A))
             ],
           ),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -67,7 +73,23 @@ class _TaskBoardsState extends State<TaskBoards> {
     );
   }
 
-
+  /// Retorna um widget de cartão personalizado para exibir informações sobre uma categoria de tarefas.
+  ///
+  /// Este método cria e retorna um widget de cartão que exibe o título da categoria,
+  /// um ícone representativo e informações adicionais, como a quantidade de tarefas.
+  ///
+  /// ### Parâmetros:
+  ///   - `titulo`: O título da categoria a ser exibido no cartão.
+  ///   - `icon`: O ícone representativo da categoria.
+  ///   - `cor`: A cor de fundo do cartão.
+  ///
+  /// ### Exemplo de uso:
+  /// ```dart
+  /// cardWidget("Trabalho", Icons.work, const Color(0xFF7EB0D5)),
+  /// ```
+  ///
+  /// ### Retorna:
+  /// Um widget de cartão personalizado.
   Widget cardWidget(String titulo, IconData icon, Color cor) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -81,14 +103,14 @@ class _TaskBoardsState extends State<TaskBoards> {
         ), 
         
         child: Padding(
-          //padding: const EdgeInsets.all(16.0),
-          padding: EdgeInsets.fromLTRB(0, 16.0, 0, 0),
+          
+          padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.fromLTRB(16.0, 0, 0, 0),
+                padding: const EdgeInsets.fromLTRB(16.0, 0, 0, 0),
                 child: Text(
                   titulo,
                   style: const TextStyle(
@@ -114,7 +136,7 @@ class _TaskBoardsState extends State<TaskBoards> {
 
               Container(
                 decoration: const BoxDecoration(
-                  color: Color.fromRGBO(255, 255, 255, 0.498), // Defina a cor de fundo desejada aqui
+                  color: Color.fromRGBO(255, 255, 255, 0.498),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(20.0),  // Raio na parte inferior esquerda
                     bottomRight: Radius.circular(20.0), // Raio na parte inferior direita
@@ -128,19 +150,13 @@ class _TaskBoardsState extends State<TaskBoards> {
                         "1 task",
                         style: TextStyle(
                           color: cinza,
-                          fontWeight: FontWeight.bold // Defina a cor do texto
-                          // Outras propriedades de estilo podem ser adicionadas conforme necessário
+                          fontWeight: FontWeight.bold
                         ),
                       ),
                     )
                   ],
                 ),
               )
-
-
-
-
-              
             ],
           ),
         ),

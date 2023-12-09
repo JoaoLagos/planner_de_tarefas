@@ -15,8 +15,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   static const Color roxo = Color(0xFF6354B2);
   static const Color amarelo = Color(0xFFFCB917);
+
   final TextEditingController _emailController = TextEditingController();
-  
   final TextEditingController _passwordController = TextEditingController();
 
   String userName = "";
@@ -25,6 +25,7 @@ class _LoginState extends State<Login> {
   late TextStyle textStyleButtonText;
   late ButtonStyle buttonStyle;
 
+  // Como textStyleCadastrar, textStyleButtonText e buttonStyle precisam ser primeiramente inicializados, colocamos dentro do initState.
   @override
   void initState() {
     super.initState();
@@ -58,7 +59,6 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: Color.fromARGB(255, 236, 234, 248),
       body: SingleChildScrollView( 
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -81,8 +81,7 @@ class _LoginState extends State<Login> {
                   style: TextStyle(
                     color: roxo,  
                     fontWeight: FontWeight.bold,  
-                    fontSize: 35,  
-                    fontFamily: "CupertinoIcons",  
+                    fontSize: 35,   
                   ),
                 ),
 
@@ -135,7 +134,7 @@ class _LoginState extends State<Login> {
 
                         onChanged: (value) {
                           setState(() {
-                            //playerName = value;
+                            
                           });
                         },
                       ),
@@ -162,7 +161,7 @@ class _LoginState extends State<Login> {
                         ),
                         onChanged: (value) {
                           setState(() {
-                            //password = value;
+                            
                           });
                         },
                       ),
@@ -170,9 +169,9 @@ class _LoginState extends State<Login> {
 
                       MouseRegion(
                         cursor: SystemMouseCursors.click,
-                        onEnter: (event) {
+                        onEnter: (event) { // Se em versão Web, configurações para caso o mouse esteja em cima desse Widget
                           setState(() {
-                            // Atualizar o estilo do texto para ficar em negrito
+                            
                             textStyleCadastrar = const TextStyle(
                               color: amarelo,
                               decoration: TextDecoration.underline,
@@ -180,9 +179,8 @@ class _LoginState extends State<Login> {
                             );
                           });
                         },
-                        onExit: (event) {
+                        onExit: (event) { // Se em versão Web, configurações para caso o mouse saia de cima desse Widget
                           setState(() {
-                            // Restaurar o estilo original do texto
                             textStyleCadastrar = const TextStyle(
                               color: Colors.white,
                               decoration: TextDecoration.underline,
@@ -205,14 +203,12 @@ class _LoginState extends State<Login> {
                         ),
                       ),
 
-                      //const SizedBox(height: 50),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.06),
 
                       MouseRegion(
                         cursor: SystemMouseCursors.click,
-                        onEnter: (event) {
+                        onEnter: (event) { // Se em versão Web, configurações para caso o mouse esteja em cima desse Widget
                           setState(() {
-                            // Atualizar o estilo do texto para ficar em negrito
                             textStyleButtonText = const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -237,7 +233,7 @@ class _LoginState extends State<Login> {
                             );
                           });
                         },
-                        onExit: (event) {
+                        onExit: (event) { // Se em versão Web, configurações para caso o mouse saia de cima desse Widget
                           setState(() {
                             textStyleButtonText = const TextStyle(
                                 color: roxo,
@@ -267,12 +263,12 @@ class _LoginState extends State<Login> {
 
                         child: ElevatedButton(
                           onPressed: () {
-                          BuildContext currentContext = context; // Salve o contexto antes da operação assíncrona
+                          BuildContext currentContext = context; // Salva o contexto antes da operação assíncrona
 
-                          _login().then((validador) {
+                          _login(_emailController, _passwordController).then((validador) {
                             if (validador) {
                               Navigator.push(
-                                currentContext, // Use a variável que armazena o contexto
+                                currentContext, // Usa a variável que armazena o contexto
                                 MaterialPageRoute(builder: (context) =>  TaskBoards(userName: userName)),
                               );   
                             }  
@@ -284,14 +280,11 @@ class _LoginState extends State<Login> {
                         ),
                       ),
 
-                      
-
-
                     ],
                   ),
                 ),
 
-                ElevatedButton(
+                ElevatedButton( // Colocado somente para limpar o banco de dados, pois ao fechar a aplicação os dados continuam lá, não resetam
                         onPressed: () {
                           user_db.limparBancoDeDados();
                         }, 
@@ -305,36 +298,61 @@ class _LoginState extends State<Login> {
     );
   }
   
-  Future<bool> _login()  async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
 
-    // Adicione a lógica de verificação de login apropriada aqui
-    // Neste exemplo, apenas mostramos uma mensagem no console
-    print("Username: $email, Password: $password");
-    print("");
-    print(user_db.consultarDados());
+  /// ### Função assíncrona responsável por realizar o processo de autenticação do usuário.
+  /// 
+  /// Esta função obtém o e-mail e a senha inseridos nos campos de entrada de texto,
+  /// verifica as credenciais no banco de dados e, se as credenciais forem válidas,
+  /// armazena o nome do usuário e retorna `true`. Caso contrário, exibe um alerta de erro
+  /// e retorna `false`.
+  /// 
+  /// ### Parâmetros:
+  ///   - `_emailController`: Controlador do campo de entrada de e-mail.
+  ///   - `_passwordController`: Controlador do campo de entrada de senha.
+  /// 
+  /// ### Retorna:
+  ///   - `true` se a autenticação for bem-sucedida, `false` caso contrário.
+  Future<bool> _login(TextEditingController emailController, TextEditingController passwordController)  async {
+    String email = emailController.text;
+    String password = passwordController.text;
 
-    List<Map<String, dynamic>> resultados = await user_db.consultarDados();
-    for (var resultado in resultados) {
-      print('ID: ${resultado['id']}, Nome: ${resultado['name']}, Email: ${resultado['email']}');
-    }
-
-    // TODO: Adicione a lógica de autenticação aqui
-
+    // Obtém informações do usuário do banco de dados
     List<Map<String, dynamic>> infoUser = await user_db.getInfoUser(email);
-    print("infoUser: ${infoUser}");
 
+    // Verifica se as credenciais são válidas. Sendo válida, variável userName recebe o nome do usuário  e a função retorna true
     if(_autentication(infoUser, password)==true) {
       userName = infoUser[0]["name"];
-      print("A");
       return true;
     }
-    print("B");
+
+    // Exibe um alerta de erro em caso de credenciais inválidas e retorna false
     _showLoginErrorAlertDialog();
     return false;
   }
 
+  /// ### Função responsável por autenticar as credenciais do usuário.
+  /// 
+  /// Esta função recebe uma lista de informações do usuário e uma senha como parâmetros.
+  /// Ela verifica se a lista de informações do usuário não está vazia e se a senha
+  /// fornecida corresponde à senha armazenada no banco de dados. Se as condições
+  /// forem atendidas, a função retorna `true`, indicando autenticação bem-sucedida;
+  /// caso contrário, retorna `false`.
+  /// 
+  /// ### Exemplo:
+  /// ```dart
+  /// String emailDigitado = "usuario@email.com"
+  /// List<Map<String, dynamic>> infoUsuario = await user_db.getInfoUser(emailDigitado);
+  /// String senhaDigitada = 'senha123';
+  /// bool autenticado = _autentication(infoUsuario, senhaDigitada);
+  /// print(autenticado); // Saída esperada: true se as credenciais forem autenticadas, false caso contrário.
+  /// ```
+  /// 
+  /// ### Parâmetros:
+  ///   - `infoUser`: Lista de informações do usuário, geralmente obtida do banco de dados.
+  ///   - `password`: Senha fornecida para autenticação.
+  /// 
+  /// ### Retorna:
+  ///   - `true` se as credenciais forem autenticadas com sucesso, `false` caso contrário.
   bool _autentication( List<Map<String, dynamic>> infoUser, String password) {
     if (infoUser.isNotEmpty) {
       if (infoUser[0]["password"] == password) {
@@ -345,6 +363,17 @@ class _LoginState extends State<Login> {
     return false;
   }
 
+  /// Exibe um diálogo de alerta para erros de login.
+  ///
+  /// Este método cria e exibe um [AlertDialog] informando ao usuário que houve
+  /// um erro nas credenciais fornecidas durante o processo de login.
+  ///
+  /// Para utilizar este método, forneça o contexto (`context`) de onde você
+  /// está chamando esta função.
+  ///
+  /// ### Parâmetros:
+  ///   - `context`: O contexto onde o diálogo será exibido. Geralmente obtido
+  ///     de `BuildContext` no local de chamada.
   void _showLoginErrorAlertDialog() {
   showDialog(
     context: context, // context deve ser fornecido a partir de onde você está chamando esta função
@@ -364,5 +393,4 @@ class _LoginState extends State<Login> {
     },
   );
 }
-  
 }

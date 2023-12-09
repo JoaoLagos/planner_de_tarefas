@@ -55,6 +55,7 @@ class _CadastroState extends State<Cadastro> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
+                        
                         TextField(
                           controller: _usernameController,
                           style: const TextStyle(
@@ -73,7 +74,9 @@ class _CadastroState extends State<Cadastro> {
                             ),
                           ),
                         ),
+                        
                         const SizedBox(height: 10),
+                        
                         TextField(
                           controller: _emailController,
                           style: const TextStyle(
@@ -92,7 +95,9 @@ class _CadastroState extends State<Cadastro> {
                             ),
                           ),
                         ),
+
                         const SizedBox(height: 10),
+
                         TextField(
                           controller: _passwordController,
                           style: const TextStyle(
@@ -112,7 +117,9 @@ class _CadastroState extends State<Cadastro> {
                             ),
                           ),
                         ),
+
                         const SizedBox(height: 10),
+
                         TextField(
                           controller: _confirmPasswordController,
                           style: const TextStyle(
@@ -132,7 +139,9 @@ class _CadastroState extends State<Cadastro> {
                             ),
                           ),
                         ),
+
                         const SizedBox(height: 10),
+
                         ElevatedButton(
                           onPressed: () {
                             _register(context);
@@ -164,34 +173,51 @@ class _CadastroState extends State<Cadastro> {
     );
   }
 
+  /// ### Registra um novo usuário com base nos dados fornecidos.
+  ///
+  /// Este método realiza a verificação da correspondência de senhas e
+  /// verifica se o e-mail já está registrado no aplicativo. Se a
+  /// verificação for bem-sucedida, o usuário é cadastrado e um
+  /// `AlertDialog` informativo é exibido. Caso contrário, uma mensagem
+  /// de erro correspondente é mostrada ao usuário.
+  ///
+  /// Para utilizar este método, forneça o contexto (`context`) de onde você
+  /// está chamando esta função.
+  /// 
+  /// ### Parâmetros:
+  ///   - `context`: O contexto onde a operação de registro será executada.
   void _register(BuildContext context) async {
     String username = _usernameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
-    print("c");
 
     if (password == confirmPassword) {
       List<Map<String, dynamic>> infoUser = await user_db.getInfoUser(email);
-      print("infoUser: ${infoUser}");
       if (infoUser.isEmpty) {
-      user_db.inserirDados(username, email, password);
-      _showAlertDialog(context, "CADASTRADO!", "Você foi cadastrado com sucesso.");
+        // Se não existir conta com esse e-mail, então crie essa conta inserindo no banco de dados do usuário
+        user_db.inserirDados(username, email, password);
+        _showAlertDialog(context, "CADASTRADO!", "Você foi cadastrado com sucesso.");
     } else {
-      _showAlertDialog(context, "EMAIL JÁ EXISTE!", "O email ${email} já está registrado. Por favor, insira um e-mail que não esteja cadastrado no aplicativo.");
+        // Caso exista conta com esse e-mail, emita um alerta
+        _showAlertDialog(context, "EMAIL JÁ EXISTE!", "O email ${email} já está registrado. Por favor, insira um e-mail que não esteja cadastrado no aplicativo.");
     }
     } else {
       // Se as senhas não coincidirem, exiba um AlertDialog
-      showPasswordErrorAlertDialog(context);
+      _showAlertDialog(context, "ERRO DE SENHA!", "'As senhas não coincidem. Por favor, tente novamente.'");
     }
-
-    print('Usuário: $username');
-    print('Email: $email');
-    print('Senha: $password');
-    print('Confirmar Senha: $confirmPassword');
   }
 
-
+  /// ### Exibe um `AlertDialog` informativo.
+  ///
+  /// Este método cria e exibe um `AlertDialog` com um título e mensagem
+  /// fornecidos.
+  ///
+  /// ### Parâmetros:
+  ///   - `context`: O contexto onde o diálogo será exibido. Geralmente obtido
+  ///     de `BuildContext` no local de chamada.
+  ///   - `h1`: O título do [AlertDialog].
+  ///   - `message`: A mensagem a ser exibida no [AlertDialog].
   void _showAlertDialog(BuildContext context, String h1, String message) {
     showDialog(
       context: context,
@@ -211,25 +237,4 @@ class _CadastroState extends State<Cadastro> {
       },
     );
   }
-
-  Future<void> showPasswordErrorAlertDialog(BuildContext context) async {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('ERRO DE SENHA!'),
-          content: const Text('As senhas não coincidem. Por favor, tente novamente.'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-}
-
 }
