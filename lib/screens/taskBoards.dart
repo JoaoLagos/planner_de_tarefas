@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class TaskBoards extends StatefulWidget {
-  const TaskBoards({super.key});
+  final String userName;
+  const TaskBoards({Key? key, required this.userName}) : super(key: key);
 
   @override
   State<TaskBoards> createState() => _TaskBoardsState();
@@ -29,9 +30,9 @@ class _TaskBoardsState extends State<TaskBoards> {
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
 
-          const Text(
-            "Bem-vindo, Usuário 1",
-            style: TextStyle(
+          Text(
+            "Bem-vindo, ${widget.userName}",
+            style: const TextStyle(
               fontSize: 20.0, // Defina o tamanho da fonte desejado
               fontWeight: FontWeight.bold, // Pode ser alterado para FontWeight.normal, FontWeight.w500, etc.
               color: Colors.black, // Defina a cor do texto conforme necessário

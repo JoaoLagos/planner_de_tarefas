@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import '../databases/userDatabase.dart' as user_db;
 
-import 'package:sqflite/sqflite.dart';
-//import 'package:path/path.dart';
-
 class Cadastro extends StatefulWidget {
-  final Future<Database> bancoDeDados;
-  const Cadastro({Key? key, required this.bancoDeDados}) : super(key: key);
+  const Cadastro({Key? key}) : super(key: key);
 
   @override
   State<Cadastro> createState() => _CadastroState();
@@ -173,11 +169,12 @@ class _CadastroState extends State<Cadastro> {
     String email = _emailController.text;
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
+    print("c");
 
-    // TODO: Verificar se a lógica de registro está coerente, coesa, certa!!!
     if (password == confirmPassword) {
-      bool emailIsInBD = await user_db.emailExists(email);
-      if (!emailIsInBD) {
+      List<Map<String, dynamic>> infoUser = await user_db.getInfoUser(email);
+      print("infoUser: ${infoUser}");
+      if (infoUser.isEmpty) {
       user_db.inserirDados(username, email, password);
       _showAlertDialog(context, "CADASTRADO!", "Você foi cadastrado com sucesso.");
     } else {

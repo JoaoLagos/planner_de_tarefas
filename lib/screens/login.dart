@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
-//import 'package:path/path.dart';
 
 import '../databases/userDatabase.dart' as user_db;
 import 'cadastro.dart';
 import 'taskBoards.dart';
 
 class Login extends StatefulWidget {
-  final Future<Database> bancoDeDados;
 
-  const Login({Key? key, required this.bancoDeDados}) : super(key: key);
+  const Login({Key? key}) : super(key: key);
 
   @override
   State<Login> createState() => _LoginState();
@@ -18,8 +15,11 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   static const Color roxo = Color(0xFF6354B2);
   static const Color amarelo = Color(0xFFFCB917);
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  
   final TextEditingController _passwordController = TextEditingController();
+
+  String userName = "";
   
   late TextStyle textStyleCadastrar;
   late TextStyle textStyleButtonText;
@@ -116,11 +116,11 @@ class _LoginState extends State<Login> {
                           color: amarelo,
                           fontSize: 14,
                         ),
-
                         cursorColor: amarelo,
+                        controller: _emailController,
 
                         decoration: const InputDecoration(
-                          labelText: 'Nome do Usuário',
+                          labelText: 'E-mail',
                           labelStyle: TextStyle(color: Colors.white),
                           
                           focusedBorder: OutlineInputBorder(
@@ -194,7 +194,7 @@ class _LoginState extends State<Login> {
 
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) =>  Cadastro(bancoDeDados: widget.bancoDeDados)),
+                                MaterialPageRoute(builder: (context) =>  Cadastro()),
                               ); 
 
                           },
@@ -273,7 +273,7 @@ class _LoginState extends State<Login> {
                             if (validador) {
                               Navigator.push(
                                 currentContext, // Use a variável que armazena o contexto
-                                MaterialPageRoute(builder: (context) => const TaskBoards()),
+                                MaterialPageRoute(builder: (context) =>  TaskBoards(userName: userName)),
                               );   
                             }  
                           });
@@ -284,10 +284,19 @@ class _LoginState extends State<Login> {
                         ),
                       ),
 
+                      
+
 
                     ],
                   ),
                 ),
+
+                ElevatedButton(
+                        onPressed: () {
+                          user_db.limparBancoDeDados();
+                        }, 
+                        child: const Text("Limpar BD")
+                      )
               ],
             ),
           ),
@@ -297,12 +306,12 @@ class _LoginState extends State<Login> {
   }
   
   Future<bool> _login()  async {
-    String username = _usernameController.text;
+    String email = _emailController.text;
     String password = _passwordController.text;
 
     // Adicione a lógica de verificação de login apropriada aqui
     // Neste exemplo, apenas mostramos uma mensagem no console
-    print("Username: $username, Password: $password");
+    print("Username: $email, Password: $password");
     print("");
     print(user_db.consultarDados());
 
@@ -311,10 +320,49 @@ class _LoginState extends State<Login> {
       print('ID: ${resultado['id']}, Nome: ${resultado['name']}, Email: ${resultado['email']}');
     }
 
-    
-
     // TODO: Adicione a lógica de autenticação aqui
-    return true;
+
+    List<Map<String, dynamic>> infoUser = await user_db.getInfoUser(email);
+    print("infoUser: ${infoUser}");
+
+    if(_autentication(infoUser, password)==true) {
+      userName = infoUser[0]["name"];
+      print("A");
+      return true;
+    }
+    print("B");
+    _showLoginErrorAlertDialog();
+    return false;
   }
+
+  bool _autentication( List<Map<String, dynamic>> infoUser, String password) {
+    if (infoUser.isNotEmpty) {
+      if (infoUser[0]["password"] == password) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  void _showLoginErrorAlertDialog() {
+  showDialog(
+    context: context, // context deve ser fornecido a partir de onde você está chamando esta função
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Erro de Login"),
+        content: Text("As credenciais fornecidas são inválidas. Tente novamente."),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Feche o AlertDialog
+            },
+            child: const Text("OK"),
+          ),
+        ],
+      );
+    },
+  );
+}
   
 }
