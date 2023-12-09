@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 import 'screens/login.dart';
+import 'databases/userDatabase.dart' as user_database;
 
 void main() async {
   // Inicializa o banco de dados antes de iniciar o aplicativo
-  var dbUsuarios = abrirBancoDeDados();
+  var dbUsuarios = user_database.abrirBancoDeDados();
 
   runApp( MaterialApp(
     title: "Planner de Tarefas",
@@ -14,22 +13,4 @@ void main() async {
   ));
 }
 
-Future<Database> abrirBancoDeDados() async {
-  var caminho = await getDatabasesPath();
-  var caminhoCompleto = join(caminho, 'meu_banco.db');
 
-  return openDatabase(
-    caminhoCompleto,
-    version: 1,
-    onCreate: (db, versao) {
-      return db.execute('''
-        CREATE TABLE user (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          name VARCHAR NOT NULL,
-          email VARCHAR NOT NULL,
-          password VARCHAR NOT NULL
-        )
-      ''');
-    },
-  );
-}

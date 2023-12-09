@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+//import 'package:path/path.dart';
 
+import '../databases/userDatabase.dart' as user_db;
 import 'cadastro.dart';
 import 'taskBoards.dart';
 
@@ -193,7 +194,7 @@ class _LoginState extends State<Login> {
 
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const Cadastro()),
+                                MaterialPageRoute(builder: (context) =>  Cadastro(bancoDeDados: widget.bancoDeDados)),
                               ); 
 
                           },
@@ -266,14 +267,18 @@ class _LoginState extends State<Login> {
 
                         child: ElevatedButton(
                           onPressed: () {
-                            bool validador = _login();
+                          BuildContext currentContext = context; // Salve o contexto antes da operação assíncrona
+
+                          _login().then((validador) {
                             if (validador) {
                               Navigator.push(
-                                context,
+                                currentContext, // Use a variável que armazena o contexto
                                 MaterialPageRoute(builder: (context) => const TaskBoards()),
                               );   
                             }  
-                          },
+                          });
+                        },
+
                           style: buttonStyle,
                           child: Text('Login', style: textStyleButtonText)
                         ),
@@ -290,17 +295,26 @@ class _LoginState extends State<Login> {
       ),
     );
   }
-  bool _login() {
+  
+  Future<bool> _login()  async {
     String username = _usernameController.text;
     String password = _passwordController.text;
 
     // Adicione a lógica de verificação de login apropriada aqui
     // Neste exemplo, apenas mostramos uma mensagem no console
     print("Username: $username, Password: $password");
+    print("");
+    print(user_db.consultarDados());
+
+    List<Map<String, dynamic>> resultados = await user_db.consultarDados();
+    for (var resultado in resultados) {
+      print('ID: ${resultado['id']}, Nome: ${resultado['name']}, Email: ${resultado['email']}');
+    }
+
+    
 
     // TODO: Adicione a lógica de autenticação aqui
     return true;
   }
-  
   
 }

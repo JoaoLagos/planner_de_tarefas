@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import '../databases/userDatabase.dart' as user_db;
 
 import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+//import 'package:path/path.dart';
 
 class Cadastro extends StatefulWidget {
-  const Cadastro({Key? key}) : super(key: key);
+  final Future<Database> bancoDeDados;
+  const Cadastro({Key? key, required this.bancoDeDados}) : super(key: key);
 
   @override
   State<Cadastro> createState() => _CadastroState();
@@ -137,7 +139,7 @@ class _CadastroState extends State<Cadastro> {
                         const SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: () {
-                            _register();
+                            _register(context);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
@@ -166,17 +168,71 @@ class _CadastroState extends State<Cadastro> {
     );
   }
 
-  void _register() {
+  void _register(BuildContext context) async {
     String username = _usernameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
 
-    // TODO: Adicionar lógica para processar o formulário de cadastro e adicionar no banco de dados
+    // TODO: Verificar se a lógica de registro está coerente, coesa, certa!!!
+    if (password == confirmPassword) {
+      bool emailIsInBD = await user_db.emailExists(email);
+      if (!emailIsInBD) {
+      user_db.inserirDados(username, email, password);
+      _showAlertDialog(context, "CADASTRADO!", "Você foi cadastrado com sucesso.");
+    } else {
+      _showAlertDialog(context, "EMAIL JÁ EXISTE!", "O email ${email} já está registrado. Por favor, insira um e-mail que não esteja cadastrado no aplicativo.");
+    }
+    } else {
+      // Se as senhas não coincidirem, exiba um AlertDialog
+      showPasswordErrorAlertDialog(context);
+    }
 
     print('Usuário: $username');
     print('Email: $email');
     print('Senha: $password');
     print('Confirmar Senha: $confirmPassword');
   }
+
+
+  void _showAlertDialog(BuildContext context, String h1, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(h1),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Fechar o AlertDialog
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> showPasswordErrorAlertDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('ERRO DE SENHA!'),
+          content: const Text('As senhas não coincidem. Por favor, tente novamente.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+}
+
 }
