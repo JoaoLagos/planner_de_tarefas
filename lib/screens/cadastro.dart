@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../databases/userDatabase.dart' as user_db;
+import '../databases/taskboardDatabase.dart' as taskboard_db;
 
 class Cadastro extends StatefulWidget {
   const Cadastro({Key? key}) : super(key: key);
@@ -197,11 +198,27 @@ class _CadastroState extends State<Cadastro> {
       if (infoUser.isEmpty) {
         // Se não existir conta com esse e-mail, então crie essa conta inserindo no banco de dados do usuário
         user_db.inserirDados(username, email, password);
+        
+        List lista = [
+          ["Trabalho", 0xFF7EB0D5],
+          ["Saúde", 0xFFB2E061],
+          ["Academia", 0xFFBD7EBE],
+          ["Estudo", 0xFFFFB55A],
+          ["Errand", 0xFFFFEE65],
+          ["Outros", 0xFF6354B2]
+        ];
+
+        var users = await user_db.consultarDados();
+
+        for (List item in lista) {
+          taskboard_db.inserirDadosTaskBoard(item[0], item[0], users.last["id"], item[1]);
+        }
+
         _showAlertDialog(context, "CADASTRADO!", "Você foi cadastrado com sucesso.");
-    } else {
-        // Caso exista conta com esse e-mail, emita um alerta
-        _showAlertDialog(context, "EMAIL JÁ EXISTE!", "O email ${email} já está registrado. Por favor, insira um e-mail que não esteja cadastrado no aplicativo.");
-    }
+      } else {
+          // Caso exista conta com esse e-mail, emita um alerta
+          _showAlertDialog(context, "EMAIL JÁ EXISTE!", "O email ${email} já está registrado. Por favor, insira um e-mail que não esteja cadastrado no aplicativo.");
+      }
     } else {
       // Se as senhas não coincidirem, exiba um AlertDialog
       _showAlertDialog(context, "ERRO DE SENHA!", "'As senhas não coincidem. Por favor, tente novamente.'");

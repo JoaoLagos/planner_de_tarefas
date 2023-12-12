@@ -19,7 +19,7 @@ class _LoginState extends State<Login> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  String userName = "";
+  Map<String, dynamic> user = {};
   
   late TextStyle textStyleCadastrar;
   late TextStyle textStyleButtonText;
@@ -269,7 +269,7 @@ class _LoginState extends State<Login> {
                             if (validador) {
                               Navigator.push(
                                 currentContext, // Usa a variável que armazena o contexto
-                                MaterialPageRoute(builder: (context) =>  TaskBoards(userName: userName)),
+                                MaterialPageRoute(builder: (context) =>  TaskBoards(user: user)),
                               );   
                             }  
                           });
@@ -319,9 +319,9 @@ class _LoginState extends State<Login> {
     // Obtém informações do usuário do banco de dados
     List<Map<String, dynamic>> infoUser = await user_db.getInfoUser(email);
 
-    // Verifica se as credenciais são válidas. Sendo válida, variável userName recebe o nome do usuário  e a função retorna true
+    // Verifica se as credenciais são válidas. Sendo válida, variável user recebe o nome do usuário  e a função retorna true
     if(_autentication(infoUser, password)==true) {
-      userName = infoUser[0]["name"];
+      user = infoUser[0];
       return true;
     }
 

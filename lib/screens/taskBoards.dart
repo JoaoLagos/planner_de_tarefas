@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+
+
+import 'pesquisar.dart';
+import '../databases/taskboardDatabase.dart'as taskboard_bd;
 
 class TaskBoards extends StatefulWidget {
-  final String userName;
+  final Map<String, dynamic> user;
 
-  const TaskBoards({Key? key, required this.userName}) : super(key: key);
+  const TaskBoards({Key? key, required this.user}) : super(key: key);
 
   @override
   State<TaskBoards> createState() => _TaskBoardsState();
@@ -12,64 +17,195 @@ class TaskBoards extends StatefulWidget {
 class _TaskBoardsState extends State<TaskBoards> {
   static const Color roxo = Color(0xFF6354B2);
   static const Color cinza = Color(0xFF403C44);
+
+  @override
+  void initState() {
+    super.initState();
+
+    /*
+    List lista = [
+      ["Trabalho", 0xFF7EB0D5],
+      ["Saúde", 0xFFB2E061],
+      ["Academia", 0xFFBD7EBE],
+      ["Estudo", 0xFFFFB55A],
+      ["Errand", 0xFFFFEE65],
+      ["Outros", 0xFF6354B2]
+    ];
+
+    List lista1 = await taskboard_bd.getInfoTaskBoardByUser(widget.user["id"]);
+    for (List item in lista) {
+      if (taskboard_bd.getInfoTaskBoardByUser(widget.user["id"])) {
+        print("b");
+        taskboard_bd.inserirDadosTaskBoard(item[0], item[0], widget.user["id"], item[1]);
+      }
+    }
+    */
+
+  }
+
+  //late List<Map<String, dynamic>> listaDeTarefas;
+
+
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text("Task Boards"),
         centerTitle: true,
         backgroundColor: roxo,
-      ),
-
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-
-          Image.asset(
-            "assets/user.png",
-            height: 90,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              // TODO:
+              exibirDialogoInserirTarefa(context);
+            },
           ),
-
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-
-          Text(
-            "Bem-vindo, ${widget.userName}",
-            style: const TextStyle(
-              fontSize: 20.0, 
-              fontWeight: FontWeight.bold, 
-              color: Colors.black, 
-            ),
-          ),
-
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              cardWidget("Trabalho", Icons.work, const Color(0xFF7EB0D5)),
-              cardWidget("Saúde", Icons.health_and_safety, const Color(0xFFB2E061)),
-            ],
-          ),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              cardWidget("Academia", Icons.self_improvement, const Color(0xFFBD7EBE)),
-              cardWidget("Estudo", Icons.book, const Color(0xFFFFB55A))
-            ],
-          ),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              cardWidget("Errand", Icons.flutter_dash, const Color(0xFFFFEE65)),
-              cardWidget("Outros", Icons.menu, roxo)
-            ],
-          )
         ],
       ),
+
+      // Menu Sanduíche
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: roxo,
+              ),
+              child: Text(
+                'MENU',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text('Página Inicial'),
+              onTap: () {
+                // Adicione a lógica que deve ser executada ao selecionar a opção do menu
+                Navigator.pop(context); // Fecha o Drawer
+              },
+            ),
+            
+            ListTile(
+              leading: const Icon(Icons.search),
+              title: const Text('Pesquisar'),
+              onTap: () {
+                // ABRIR O PESQUISA AQUI!
+                Navigator.pop(context); // Fecha o Drawer
+                abrirTelaPesquisa(context);
+                
+
+              },
+            ),
+          ],
+        ),
+      ),
+
+      body: SingleChildScrollView(
+        child:Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+
+            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+
+            Image.asset(
+              "assets/user.png",
+              height: 90,
+            ),
+
+            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+
+            Text(
+              "Bem-vindo, ${widget.user["name"]}",
+              style: const TextStyle(
+                fontSize: 20.0, 
+                fontWeight: FontWeight.bold, 
+                color: Colors.black, 
+              ),
+            ),
+
+            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+
+            
+            FutureBuilder<int>(
+              future: taskboard_bd.tamanhoByUser(widget.user["id"]),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return const Text('Erro ao carregar dados do banco de dados');
+                } else {
+                  int tamanho = snapshot.data ?? 0;
+
+                  return Column(
+                    children: [
+                      for (int i = 0; i < tamanho; i += 2)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            FutureBuilder<List<Map<String, dynamic>>>(
+                              future: taskboard_bd.getInfoTaskBoardByUser(widget.user["id"]),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return const CircularProgressIndicator();
+                                } else if (snapshot.hasError) {
+                                  return const Text('Erro ao carregar dados do board');
+                                } else {
+                                  // Verifique se a lista tem algum item antes de acessar o primeiro elemento
+                                  if (snapshot.data!.isNotEmpty && widget.user["id"] == snapshot.data![i]["user_id"]) {
+                                    Map<String, dynamic> boardData = snapshot.data![i];
+
+                                    return cardWidget(
+                                      boardData["name"] ?? "",
+                                      boardData["icon"] ?? "error",
+                                      boardData["color"] ?? 0,
+                                    );
+                                  } else {
+                                    return const Text('Nenhum dado encontrado');
+                                  }
+                                }
+                              },
+                            ),
+                            if (i + 1 < tamanho)
+                              FutureBuilder<List<Map<String, dynamic>>>(
+                                future: taskboard_bd.getInfoTaskBoardByUser(widget.user["id"]),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return const Text('Erro ao carregar dados do board');
+                                  } else {
+                                    // Verifique se a lista tem algum item antes de acessar o primeiro elemento
+                                    if (snapshot.data!.isNotEmpty && widget.user["id"] == snapshot.data![i+1]["user_id"]) {
+                                      Map<String, dynamic> boardData = snapshot.data![i+1];
+
+                                      return cardWidget(
+                                        boardData["name"] ?? "",
+                                        boardData["icon"] ?? "error",
+                                        boardData["color"] ?? 0,
+                                      );
+                                    } else {
+                                      return const Text('Nenhum dado encontrado');
+                                    }
+                                  }
+                                },
+                              ),
+                          ],
+                        ),
+                    ],
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+      )
     );
   }
 
@@ -90,7 +226,7 @@ class _TaskBoardsState extends State<TaskBoards> {
   ///
   /// ### Retorna:
   /// Um widget de cartão personalizado.
-  Widget cardWidget(String titulo, IconData icon, Color cor) {
+  Widget cardWidget(String titulo, String icon, int cor) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child:Container(
@@ -98,7 +234,7 @@ class _TaskBoardsState extends State<TaskBoards> {
         height: MediaQuery.of(context).size.height * 0.20, 
         
         decoration: BoxDecoration(
-          color: cor,
+          color: Color(cor),
           borderRadius: BorderRadius.circular(20.0), 
         ), 
         
@@ -127,7 +263,7 @@ class _TaskBoardsState extends State<TaskBoards> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    icon,
+                    getIconFromName(icon),
                     size: 45,
                     color: cinza,
                   ),
@@ -163,4 +299,145 @@ class _TaskBoardsState extends State<TaskBoards> {
       )
     );
   }
+
+  // Função para exibir o AlertDialog de pesquisa
+  Future<void> exibirDialogoPesquisa(BuildContext context) async {
+    TextEditingController controller = TextEditingController();
+    
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Pesquisar Tarefa'),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(hintText: 'Nome da Tarefa'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Aqui você pode acessar o nome da tarefa digitado usando controller.text
+                
+                Navigator.of(context).pop();
+              },
+              child: const Text('Pesquisar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void abrirTelaPesquisa(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => Pesquisar(
+        onPesquisaConfirmada: (data) {
+          // Aqui você pode lidar com os resultados da pesquisa
+          
+          // Incluir aqui a lógica para exibir as tarefas correspondentes à pesquisa
+        },
+      ),
+    ),
+  );
+}
+
+Future<void> exibirDialogoInserirTarefa(BuildContext context) async {
+  String nomeTarefa = ''; // Variável para armazenar o nome da nova tarefa
+  Color corSelecionada = Colors.blue; // Valor padrão, você pode definir a cor padrão desejada
+
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Nova Tarefa'),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                onChanged: (valor) {
+                  nomeTarefa = valor;
+                },
+                decoration: const InputDecoration(
+                  hintText: 'Insira o nome da nova tarefa',
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text('Escolha a cor:'),
+              const SizedBox(height: 8),
+              ColorPicker(
+                pickerColor: corSelecionada,
+                onColorChanged: (color) {
+                  corSelecionada = color;
+                },
+                colorPickerWidth: 300.0,
+                pickerAreaHeightPercent: 0.7,
+                enableAlpha: false,
+                displayThumbColor: true,
+                showLabel: true,
+                paletteType: PaletteType.hsv,
+                pickerAreaBorderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(2.0),
+                  topRight: Radius.circular(2.0),
+                ),
+              )
+            ],
+          )
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              taskboard_bd.limparBancoDeDadosTaskBoard();
+              setState(() {
+                
+              });
+              Navigator.pop(context);
+            },
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () {
+              taskboard_bd.inserirDadosTaskBoard(nomeTarefa, nomeTarefa, widget.user["id"], corSelecionada.value);
+              print('Nome da nova tarefa: $nomeTarefa');
+
+              setState(() {
+                
+              });
+              Navigator.pop(context);
+            },
+            child: const Text('Inserir'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
+IconData getIconFromName(String iconName) {
+  switch (iconName) {
+    case 'Trabalho':
+      return Icons.work;
+    case 'Saúde':
+      return Icons.health_and_safety;
+    case 'Academia':
+      return Icons.health_and_safety;
+    case 'Estudo':
+      return Icons.book;
+    // Adicione mais casos conforme necessário
+    default:
+      return Icons.error; // Ou o ícone padrão que você preferir
+  }
+}
+
+
 }
