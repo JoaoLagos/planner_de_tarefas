@@ -193,7 +193,20 @@ class _CadastroState extends State<Cadastro> {
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
 
+    // Verificação do formato do e-mail usando expressão regular
+    RegExp emailRegExp = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+    if (!emailRegExp.hasMatch(email)) {
+      _showAlertDialog(context, "FORMATO DE E-MAIL INVÁLIDO!", "Por favor, insira um e-mail válido.");
+      return;
+    }
+
     if (password == confirmPassword) {
+      // Verificação da senha usando expressão regular
+      RegExp passwordRegExp = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$');
+      if (!passwordRegExp.hasMatch(password)) {
+        _showAlertDialog(context, "SENHA INVÁLIDA!", "A senha deve conter pelo menos:\n ➡️ 8 caracteres\n ➡️ uma letra minúscula\n ➡️ uma letra maiúscula\n ➡️ um dígito\n ➡️ um caractere especial.");
+        return;
+      }
       List<Map<String, dynamic>> infoUser = await user_db.getInfoUser(email);
       if (infoUser.isEmpty) {
         // Se não existir conta com esse e-mail, então crie essa conta inserindo no banco de dados do usuário
@@ -216,8 +229,8 @@ class _CadastroState extends State<Cadastro> {
 
         _showAlertDialog(context, "CADASTRADO!", "Você foi cadastrado com sucesso.");
       } else {
-          // Caso exista conta com esse e-mail, emita um alerta
-          _showAlertDialog(context, "EMAIL JÁ EXISTE!", "O email ${email} já está registrado. Por favor, insira um e-mail que não esteja cadastrado no aplicativo.");
+        // Caso exista conta com esse e-mail, emita um alerta
+        _showAlertDialog(context, "EMAIL JÁ EXISTE!", "O email ${email} já está registrado. Por favor, insira um e-mail que não esteja cadastrado no aplicativo.");
       }
     } else {
       // Se as senhas não coincidirem, exiba um AlertDialog
