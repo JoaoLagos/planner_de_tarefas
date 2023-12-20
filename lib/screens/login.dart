@@ -59,13 +59,13 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView( 
+      body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(80.0),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset(
                   "assets/logo.png", 
@@ -117,6 +117,7 @@ class _LoginState extends State<Login> {
                         ),
                         cursorColor: amarelo,
                         controller: _emailController,
+
 
                         decoration: const InputDecoration(
                           labelText: 'E-mail',
@@ -293,7 +294,7 @@ class _LoginState extends State<Login> {
               ],
             ),
           ),
-        ), 
+        ),
       ),
     );
   }

@@ -42,18 +42,18 @@ Future<Database> abrirBancoDeDadosTask() async {
 ///
 /// ### Exemplo de uso:
 /// ```dart
-/// var dadosTarefas = await consultarDadosTask();
+/// var dadosTarefas = await consultarDadosTask(7);
 /// ```
-Future<List<Map<String, dynamic>>> consultarDadosTask() async {
+Future<List<Map<String, dynamic>>> consultarDadosTask(int boardId) async {
   final Database db = await abrirBancoDeDadosTask();
-  return await db.query('task'); // Substitua 'task' pelo nome da sua tabela de tarefas
+  return await db.query('task', where: 'board_id = ?', whereArgs: [boardId]);
 }
 
 /// Função assíncrona que insere uma nova tarefa no banco de dados.
 ///
 /// ### Parâmetros:
 ///   - `userId`: O ID do usuário associado à tarefa.
-///   - `boardId`: O ID do board associado à tarefa.
+///   - `boardId`: O ID do board associado ao quadro.
 ///   - `titulo`: O título da tarefa a ser inserido.
 ///   - `nota`: A nota da tarefa a ser inserida.
 ///   - `data`: A data da tarefa a ser inserida.
@@ -168,4 +168,33 @@ Future<void> limparBancoDeDadosTask() async {
       FOREIGN KEY(board_id) REFERENCES task_board(id)
     )
   ''');
+}
+
+
+Future<void> changeTaskState(bool value, int id) async {
+  final Database db = await abrirBancoDeDadosTask();
+  try {
+    await db.update(
+      'task',
+      {'isCompleted': value ? 1 : 0},
+      where: 'id = ?',
+      whereArgs: [id]
+    );
+  } catch (e) {
+    print('Erro ao consultar o banco de dados de tarefas: $e');
+  }
+}
+
+Future<void> deleteTask(int id) async {
+  final Database db = await abrirBancoDeDadosTask();
+
+  try {
+    await db.delete(
+      'task',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  } catch (e) {
+    print('Erro ao deletar a tarefa do banco de dados: $e');
+  }
 }
