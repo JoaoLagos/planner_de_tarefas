@@ -23,7 +23,7 @@ class _CadastroState extends State<Cadastro> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Tela de Cadastro"),
+        title: const Text("Crie uma conta"),
         centerTitle: true,
         backgroundColor: roxo,
       ),
@@ -38,7 +38,7 @@ class _CadastroState extends State<Cadastro> {
                 children: [
                   Container(
                     width: MediaQuery.of(context).size.width * 0.6,
-                    height: MediaQuery.of(context).size.height * 0.7,
+                    height: MediaQuery.of(context).size.height * 0.65,
                     decoration: BoxDecoration(
                       color: Colors.purple,
                       border: Border.all(
@@ -56,7 +56,8 @@ class _CadastroState extends State<Cadastro> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        
+                        const Text("Dados de Login", style: TextStyle(color: Colors.white, fontSize: 22),),
+                        const SizedBox(height: 40),
                         TextField(
                           controller: _usernameController,
                           style: const TextStyle(
@@ -160,7 +161,7 @@ class _CadastroState extends State<Cadastro> {
                               borderRadius: BorderRadius.circular(20.0),
                             ),
                           ),
-                          child: const Text('Cadastrar'),
+                          child: const Text('Cadastrar', style: TextStyle(color: roxo),),
                         ),
                       ],
                     ),

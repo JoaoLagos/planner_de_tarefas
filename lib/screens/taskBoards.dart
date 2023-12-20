@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
-
 import 'pesquisar.dart';
+import 'login.dart';
+import 'tasksView.dart';
+import 'recentTasks.dart';
+import 'completedTasks.dart';
 import '../databases/taskboardDatabase.dart'as taskboard_bd;
+import '../databases/taskDatabase.dart'as task_bd;
 
 class TaskBoards extends StatefulWidget {
   final Map<String, dynamic> user;
@@ -21,29 +25,7 @@ class _TaskBoardsState extends State<TaskBoards> {
   @override
   void initState() {
     super.initState();
-
-    /*
-    List lista = [
-      ["Trabalho", 0xFF7EB0D5],
-      ["Saúde", 0xFFB2E061],
-      ["Academia", 0xFFBD7EBE],
-      ["Estudo", 0xFFFFB55A],
-      ["Errand", 0xFFFFEE65],
-      ["Outros", 0xFF6354B2]
-    ];
-
-    List lista1 = await taskboard_bd.getInfoTaskBoardByUser(widget.user["id"]);
-    for (List item in lista) {
-      if (taskboard_bd.getInfoTaskBoardByUser(widget.user["id"])) {
-        print("b");
-        taskboard_bd.inserirDadosTaskBoard(item[0], item[0], widget.user["id"], item[1]);
-      }
-    }
-    */
-
   }
-
-  //late List<Map<String, dynamic>> listaDeTarefas;
 
 
   @override
@@ -98,7 +80,38 @@ class _TaskBoardsState extends State<TaskBoards> {
                 // ABRIR O PESQUISA AQUI!
                 Navigator.pop(context); // Fecha o Drawer
                 abrirTelaPesquisa(context);
-                
+
+
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.schedule),
+              title: const Text('Tarefas Recentes'),
+              onTap: () {
+                Navigator.pop(context); // Fecha o Drawer
+                // TODO: query baseada no user taskList = await task_bd.consultarDadosTask(user);
+                List<Map<String, dynamic>> taskList =  [];
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  RecentTasksView(taskList: taskList, user: widget.user)));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.done),
+              title: const Text('Tarefas Concluídas'),
+              onTap: () {
+                Navigator.pop(context); // Fecha o Drawer
+                // TODO: query baseada no user taskList = await task_bd.consultarDadosTask(user);
+                List<Map<String, dynamic>> taskList =  [];
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  CompletedTasksView(taskList: taskList, user: widget.user)));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.exit_to_app),
+              title: const Text('Sair'),
+              onTap: () {
+                // ABRIR O PESQUISA AQUI!
+                Navigator.pop(context); // Fecha o Drawer
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const Login()));
+
 
               },
             ),
@@ -161,11 +174,23 @@ class _TaskBoardsState extends State<TaskBoards> {
                                   if (snapshot.data!.isNotEmpty && widget.user["id"] == snapshot.data![i]["user_id"]) {
                                     Map<String, dynamic> boardData = snapshot.data![i];
 
-                                    return cardWidget(
-                                      boardData["name"] ?? "",
-                                      boardData["icon"] ?? "error",
-                                      boardData["color"] ?? 0,
-                                    );
+                                    return FutureBuilder<List<Map<String, dynamic>>>(future: task_bd.consultarDadosTask(boardData["id"]), builder:
+                                    (context, taskListSnapshot) {
+                                      if (taskListSnapshot.connectionState == ConnectionState.waiting) {
+                                        return const CircularProgressIndicator();
+                                      } else if (taskListSnapshot.hasError) {
+                                        return Text('Erro ao buscar tarefas: ${taskListSnapshot.error}');
+                                      } else {
+                                        List<Map<String, dynamic>> taskList = taskListSnapshot.data ?? [];
+                                        return cardWidget(
+                                          boardData["name"] ?? "",
+                                          boardData["icon"] ?? "error",
+                                          boardData["color"] ?? 0,
+                                          taskList,
+                                          boardData["id"],
+                                        );
+                                      }
+                                    });
                                   } else {
                                     return const Text('Nenhum dado encontrado');
                                   }
@@ -185,11 +210,23 @@ class _TaskBoardsState extends State<TaskBoards> {
                                     if (snapshot.data!.isNotEmpty && widget.user["id"] == snapshot.data![i+1]["user_id"]) {
                                       Map<String, dynamic> boardData = snapshot.data![i+1];
 
-                                      return cardWidget(
-                                        boardData["name"] ?? "",
-                                        boardData["icon"] ?? "error",
-                                        boardData["color"] ?? 0,
-                                      );
+                                      return FutureBuilder<List<Map<String, dynamic>>>(future: task_bd.consultarDadosTask(boardData["id"]), builder:
+                                          (context, taskListSnapshot) {
+                                        if (taskListSnapshot.connectionState == ConnectionState.waiting) {
+                                          return const CircularProgressIndicator();
+                                        } else if (taskListSnapshot.hasError) {
+                                          return Text('Erro ao buscar tarefas: ${taskListSnapshot.error}');
+                                        } else {
+                                          List<Map<String, dynamic>> taskList = taskListSnapshot.data ?? [];
+                                          return cardWidget(
+                                            boardData["name"] ?? "",
+                                            boardData["icon"] ?? "error",
+                                            boardData["color"] ?? 0,
+                                            taskList,
+                                            boardData["id"]
+                                          );
+                                        }
+                                      });
                                     } else {
                                       return const Text('Nenhum dado encontrado');
                                     }
@@ -218,6 +255,7 @@ class _TaskBoardsState extends State<TaskBoards> {
   ///   - `titulo`: O título da categoria a ser exibido no cartão.
   ///   - `icon`: O ícone representativo da categoria.
   ///   - `cor`: A cor de fundo do cartão.
+  ///   - `id`: id do board na db.
   ///
   /// ### Exemplo de uso:
   /// ```dart
@@ -226,78 +264,82 @@ class _TaskBoardsState extends State<TaskBoards> {
   ///
   /// ### Retorna:
   /// Um widget de cartão personalizado.
-  Widget cardWidget(String titulo, String icon, int cor) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child:Container(
-        width: MediaQuery.of(context).size.width * 0.4, 
-        height: MediaQuery.of(context).size.height * 0.20, 
-        
-        decoration: BoxDecoration(
-          color: Color(cor),
-          borderRadius: BorderRadius.circular(20.0), 
-        ), 
-        
+  Widget cardWidget(String titulo, String icon, int cor, List<Map<String, dynamic>>? taskList, int boardId) {
+
+    return InkWell(onTap: () async {
+      await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TasksView(taskList: taskList, boardName: titulo, user: widget.user, boardId: boardId, cor: cor)));
+    },
         child: Padding(
-          
-          padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 0, 0, 0),
-                child: Text(
-                  titulo,
-                  style: const TextStyle(
-                    fontSize: 20.0, 
-                    fontWeight: FontWeight.bold, 
-                    color: cinza, 
+        padding: const EdgeInsets.all(8.0),
+        child:Container(
+          width: MediaQuery.of(context).size.width * 0.4,
+          height: MediaQuery.of(context).size.height * 0.20,
+
+          decoration: BoxDecoration(
+            color: Color(cor),
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+
+          child: Padding(
+
+            padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 0, 0, 0),
+                  child: Text(
+                    titulo,
+                    style: const TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: cinza,
+                    ),
                   ),
                 ),
-              ),
-              
-              //SizedBox(height: MediaQuery.of(context).size.height * 0.03),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    getIconFromName(icon),
-                    size: 45,
-                    color: cinza,
-                  ),
-                ],
-              ),
+                //SizedBox(height: MediaQuery.of(context).size.height * 0.03),
 
-              Container(
-                decoration: const BoxDecoration(
-                  color: Color.fromRGBO(255, 255, 255, 0.498),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(20.0),  // Raio na parte inferior esquerda
-                    bottomRight: Radius.circular(20.0), // Raio na parte inferior direita
-                  ),
-                ),
-                child: const Row(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Text(
-                        "1 task",
-                        style: TextStyle(
-                          color: cinza,
-                          fontWeight: FontWeight.bold
-                        ),
-                      ),
-                    )
+                    Icon(
+                      getIconFromName(icon),
+                      size: 45,
+                      color: cinza,
+                    ),
                   ],
                 ),
-              )
-            ],
+
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Color.fromRGBO(255, 255, 255, 0.498),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(20.0),  // Raio na parte inferior esquerda
+                      bottomRight: Radius.circular(20.0), // Raio na parte inferior direita
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text(
+                          "${taskList!.isEmpty ? 'sem' : taskList.length } ${taskList.length == 1 ? 'tarefa' : 'tarefas'}",
+                          style: const TextStyle(
+                              color: cinza,
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
-      )
-    );
+        )
+    ));
   }
 
   // Função para exibir o AlertDialog de pesquisa
@@ -357,7 +399,7 @@ Future<void> exibirDialogoInserirTarefa(BuildContext context) async {
     context: context,
     builder: (context) {
       return AlertDialog(
-        title: const Text('Nova Tarefa'),
+        title: const Text('Novo Quadro'),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -368,7 +410,7 @@ Future<void> exibirDialogoInserirTarefa(BuildContext context) async {
                   nomeTarefa = valor;
                 },
                 decoration: const InputDecoration(
-                  hintText: 'Insira o nome da nova tarefa',
+                  hintText: 'Insira o nome do novo quadro',
                 ),
               ),
               const SizedBox(height: 20),
@@ -396,7 +438,7 @@ Future<void> exibirDialogoInserirTarefa(BuildContext context) async {
         actions: [
           TextButton(
             onPressed: () {
-              taskboard_bd.limparBancoDeDadosTaskBoard();
+              // taskboard_bd.limparBancoDeDadosTaskBoard();
               setState(() {
                 
               });
@@ -424,6 +466,7 @@ Future<void> exibirDialogoInserirTarefa(BuildContext context) async {
 
 
 IconData getIconFromName(String iconName) {
+    // TODO: fazer um iconpicker na hora de criar a terefa
   switch (iconName) {
     case 'Trabalho':
       return Icons.work;
