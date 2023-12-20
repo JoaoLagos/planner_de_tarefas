@@ -122,6 +122,24 @@ Future<List<Map<String, dynamic>>> getInfoTask(String titulo) async {
   return result;
 }
 
+Future<List<Map<String, dynamic>>> buscarTasksPorData(String date) async {
+  final Database db = await abrirBancoDeDadosTask();
+  List<Map<String, dynamic>> result;
+
+  try {
+    result = await db.rawQuery('''
+      SELECT * FROM task
+      WHERE date = ?
+    ''', [date]);
+  } catch (e) {
+    print('Erro ao consultar o banco de dados de tarefas: $e');    
+    result = [];
+    throw e;
+  }
+
+  return result;
+}
+
 /// Função assíncrona que limpa a tabela 'task' no banco de dados de tarefas.
 ///
 /// Exclui todos os registros da tabela 'task' e a recria.
