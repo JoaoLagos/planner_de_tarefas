@@ -349,6 +349,7 @@ class _TaskBoardsState extends State<TaskBoards> {
 
 
   void abrirTelaPesquisa(BuildContext context) {
+    
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -357,7 +358,7 @@ class _TaskBoardsState extends State<TaskBoards> {
             // Aqui você pode lidar com os resultados da pesquisa
             
             // Incluir aqui a lógica para exibir as tarefas correspondentes à pesquisa
-          },
+          },          
         ),
       ),
     );

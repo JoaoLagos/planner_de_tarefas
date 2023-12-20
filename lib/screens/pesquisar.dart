@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import '../databases/taskDatabase.dart' as task_db;
 
+
 class Pesquisar extends StatefulWidget {
   final Function(DateTime) onPesquisaConfirmada;
+  //List<Map<String, dynamic>> taskDataList;
 
   const Pesquisar({Key? key, required this.onPesquisaConfirmada}) : super(key: key);
 
@@ -11,9 +13,18 @@ class Pesquisar extends StatefulWidget {
 }
 
 class _PesquisarState extends State<Pesquisar> {
+
+
   int? selectedDay;
   int? selectedMonth;
   int? selectedYear;
+  late Widget _resultadoWidget; // Variável para armazenar o widget de resultado
+
+  @override
+  void initState() {
+    super.initState();
+    _resultadoWidget = Container(); // Inicializa o _resultadoWidget com um Container vazio
+  }
 
   static const Color roxo = Color(0xFF6354B2);
 
@@ -55,10 +66,8 @@ class _PesquisarState extends State<Pesquisar> {
             ElevatedButton(
               onPressed: () {
                 if (selectedYear != null && selectedMonth != null && selectedDay != null) {
-                  widgetResultadoPesquisa(context, selectedYear, selectedMonth, selectedDay);
-                  // Chame a função de pesquisa confirmada com a data selecionada
-                  //widget.onPesquisaConfirmada(DateTime(selectedYear!, selectedMonth!, selectedDay!));
-                  //Navigator.pop(context);
+                  _buscarEAtualizarResultado(context, selectedYear, selectedMonth, selectedDay);
+                 
                 } else {
                   // TODO: Fazer
                   print('Por favor, selecione uma data completa.');
@@ -67,6 +76,7 @@ class _PesquisarState extends State<Pesquisar> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,  // Altere para a cor desejada
               ),
+              
               child: const Padding(
                 padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                 child: Text(
@@ -75,11 +85,13 @@ class _PesquisarState extends State<Pesquisar> {
                 ),
               ),
             ),
-            ///////////////////////////////////////
-            //widgetResultadoPesquisa(context),
+            Expanded(
+              child: _resultadoWidget,
+            ),
           ],
         ),
       ),
+      
     );
   }
 
@@ -100,16 +112,27 @@ class _PesquisarState extends State<Pesquisar> {
     }
   }
 
-
-  Widget widgetResultadoPesquisa(BuildContext contextm, int? ano, int? mes, int? dia) {
-    
+   Future<void> _buscarEAtualizarResultado(BuildContext context, int? ano, int? mes, int? dia) async {
     String date = [ano, mes, dia].join('-');
+
+    // Faz a consulta
+    List<Map<String, dynamic>> resultados = await task_db.buscarTasksPorData(date);
+
+    setState(() {
+      // Atualiza o widget do resultado com o novo FutureBuilder
+      _resultadoWidget = widgetResultadoPesquisa(resultados);
+    });
+  }
+
+  Widget widgetResultadoPesquisa(List<Map<String, dynamic>> resultados) {
+    
+    //String date = [ano, mes, dia].join('-');
     
     
 
     //TODO:
     return FutureBuilder<List<Map<String, dynamic>>>(
-    future: task_db.buscarTasksPorData(date),
+    future: Future.value(resultados), // Usa Future.value para um futuro já resolvido
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
         return CircularProgressIndicator(); // Exibe um indicador de carregamento enquanto aguarda a conclusão da consulta
@@ -119,6 +142,8 @@ class _PesquisarState extends State<Pesquisar> {
         return Text('Nenhum resultado encontrado'); // Se não houver dados ou a lista estiver vazia
       } else {
         List<Map<String, dynamic>> resultados = snapshot.data!;
+
+        
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,19 +169,34 @@ class _PesquisarState extends State<Pesquisar> {
                   String endTime = item['endTime'] ?? ''; // Obtendo o horário de término da tarefa
 
 
-                  return ListTile(
-                    title: Text(title),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(note),
-                        Text('Data: $date'),
-                        Text('Inicio: $startTime'),
-                        Text('Término: $endTime')
-                    ]),
-                    onTap: () {
-                      // Ação ao clicar em um item da lista (se desejado)
-                    },
+                  return Card(
+                    elevation: 3, // Adiciona sombra ao card
+                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 4), // Espaçamento entre os cards
+                    child: ListTile(
+                          title: Text(
+                            title,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 4),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(note),
+                                SizedBox(height: 4),
+                                Text('Data: $date'),
+                                SizedBox(height: 4),
+                                Text('Inicio: $startTime'),
+                                SizedBox(height: 4),
+                                Text('Término: $endTime'),
+                              ],
+                            ),
+                          ),
+                          onTap: () {
+                            // Ação ao clicar no item
+                          },
+                        ),
+
                   );
                 },
               ),
