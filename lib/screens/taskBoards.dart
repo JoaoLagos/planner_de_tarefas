@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 
 import 'pesquisar.dart';
 import 'login.dart';
@@ -306,7 +307,10 @@ class _TaskBoardsState extends State<TaskBoards> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      getIconFromName(icon),
+                      IconData(
+                        icon.codeUnitAt(0), // Pega o icone(String) e transforma em icone(int)
+                        fontFamily: 'MaterialIcons', // Substitua pela família de fontes apropriada
+                      ),
                       size: 45,
                       color: cinza,
                     ),
@@ -362,6 +366,10 @@ class _TaskBoardsState extends State<TaskBoards> {
 Future<void> exibirDialogoInserirTarefa(BuildContext context) async {
   String nomeTarefa = ''; // Variável para armazenar o nome da nova tarefa
   Color corSelecionada = Colors.blue; // Valor padrão, você pode definir a cor padrão desejada
+  IconData? iconeSelecionado = Icons.error; // Valor padrão, você pode definir o ícone padrão desejado
+  String stringIconeSelecionado = String.fromCharCode(iconeSelecionado.codePoint);
+
+
 
   return showDialog(
     context: context,
@@ -399,7 +407,18 @@ Future<void> exibirDialogoInserirTarefa(BuildContext context) async {
                   topLeft: Radius.circular(2.0),
                   topRight: Radius.circular(2.0),
                 ),
-              )
+              ),
+
+              TextButton(
+                onPressed: () async {
+                  iconeSelecionado = await FlutterIconPicker.showIconPicker(context);
+                  if (iconeSelecionado != null) {
+                    stringIconeSelecionado = String.fromCharCode(iconeSelecionado!.codePoint);
+
+                  }
+                },
+                child: const Text('Selecionar ícone'),
+              ),
             ],
           )
         ),
@@ -407,7 +426,7 @@ Future<void> exibirDialogoInserirTarefa(BuildContext context) async {
           TextButton(
             onPressed: () {
               // taskboard_bd.limparBancoDeDadosTaskBoard();
-              taskboard_bd.limparBancoDeDadosTaskBoardOfUser(widget.user["id"]);
+              // taskboard_bd.deleteAllTaskBoardsOfUser(widget.user["id"]);
               setState(() {
                 
               });
@@ -417,7 +436,7 @@ Future<void> exibirDialogoInserirTarefa(BuildContext context) async {
           ),
           TextButton(
             onPressed: () {
-              taskboard_bd.inserirDadosTaskBoard(nomeTarefa, nomeTarefa, widget.user["id"], corSelecionada.value);
+              taskboard_bd.inserirDadosTaskBoard(nomeTarefa, stringIconeSelecionado, widget.user["id"], corSelecionada.value);
               print('Nome da nova tarefa: $nomeTarefa');
 
               setState(() {
@@ -431,24 +450,6 @@ Future<void> exibirDialogoInserirTarefa(BuildContext context) async {
       );
     },
   );
-}
-
-
-IconData getIconFromName(String iconName) {
-    // TODO: fazer um iconpicker na hora de criar a terefa
-  switch (iconName) {
-    case 'Trabalho':
-      return Icons.work;
-    case 'Saúde':
-      return Icons.health_and_safety;
-    case 'Academia':
-      return Icons.health_and_safety;
-    case 'Estudo':
-      return Icons.book;
-    // Adicione mais casos conforme necessário
-    default:
-      return Icons.error; // Ou o ícone padrão que você preferir
-  }
 }
 
 

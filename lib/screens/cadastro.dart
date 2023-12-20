@@ -214,18 +214,18 @@ class _CadastroState extends State<Cadastro> {
         user_db.inserirDados(username, email, password);
         
         List lista = [
-          ["Trabalho", 0xFF7EB0D5],
-          ["Saúde", 0xFFB2E061],
-          ["Academia", 0xFFBD7EBE],
-          ["Estudo", 0xFFFFB55A],
-          ["Errand", 0xFFFFEE65],
-          ["Outros", 0xFF6354B2]
+          ["Trabalho", String.fromCharCode(Icons.work.codePoint), 0xFF7EB0D5],
+          ["Saúde", String.fromCharCode(Icons.health_and_safety.codePoint), 0xFFB2E061],
+          ["Academia", String.fromCharCode(Icons.health_and_safety.codePoint), 0xFFBD7EBE],
+          ["Estudo", String.fromCharCode(Icons.book.codePoint), 0xFFFFB55A],
+          ["Errand", String.fromCharCode(Icons.error.codePoint), 0xFFFFEE65],
+          ["Outros", String.fromCharCode(Icons.error.codePoint), 0xFF6354B2]
         ];
 
         var users = await user_db.consultarDados();
 
         for (List item in lista) {
-          taskboard_db.inserirDadosTaskBoard(item[0], item[0], users.last["id"], item[1]);
+          taskboard_db.inserirDadosTaskBoard(item[0], item[1], users.last["id"], item[2]);
         }
 
         _showAlertDialog(context, "CADASTRADO!", "Você foi cadastrado com sucesso.");

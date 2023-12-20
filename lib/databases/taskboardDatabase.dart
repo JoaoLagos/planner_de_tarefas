@@ -197,7 +197,7 @@ Future<void> limparBancoDeDadosTaskBoard() async {
 /// ```dart
 /// await limparBancoDeDadosTaskBoardOfUser(user_id);
 /// ```
-Future<void> limparBancoDeDadosTaskBoardOfUser(int user_id) async {
+Future<void> deleteAllTaskBoardsOfUser(int user_id) async {
   final Database db = await abrirBancoDeDadosTaskBoard();
 
   await db.delete(
