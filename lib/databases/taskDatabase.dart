@@ -170,7 +170,17 @@ Future<void> limparBancoDeDadosTask() async {
   ''');
 }
 
-
+/// #### Altera o estado de conclusão de uma tarefa no banco de dados.
+///
+/// Este método atualiza o campo 'isCompleted' de uma tarefa com o ID especificado
+/// no banco de dados. O valor booleano `value` determina se a tarefa está concluída (true)
+/// ou não concluída (false).
+///
+/// ### Exemplo de uso:
+///
+/// ```dart
+/// await changeTaskState(true, taskId);
+/// ```
 Future<void> changeTaskState(bool value, int id) async {
   final Database db = await abrirBancoDeDadosTask();
   try {
@@ -185,6 +195,15 @@ Future<void> changeTaskState(bool value, int id) async {
   }
 }
 
+/// #### Exclui uma tarefa do banco de dados pelo ID.
+///
+/// Este método exclui uma tarefa do banco de dados com base no ID especificado.
+///
+/// ### Exemplo de uso:
+///
+/// ```dart
+/// await deleteTask(taskId);
+/// ```
 Future<void> deleteTask(int id) async {
   final Database db = await abrirBancoDeDadosTask();
 
@@ -197,4 +216,26 @@ Future<void> deleteTask(int id) async {
   } catch (e) {
     print('Erro ao deletar a tarefa do banco de dados: $e');
   }
+}
+
+/// #### Exclui todas as tarefas associadas a um TaskBoard do banco de dados.
+///
+/// Este método exclui todas as tarefas associadas a um TaskBoard com o ID especificado
+/// do banco de dados.
+///
+/// ### Exemplo de uso:
+///
+/// ```dart
+/// await deleteAllTasksOfBoardId(boardId);
+/// ```
+Future<void> deleteAllTasksOfBoardId(int board_id) async {
+  // Abre o banco de dados
+  Database db = await abrirBancoDeDadosTask();
+
+  // Exclui todas as tarefas com o board_id especificado da tabela task
+  await db.delete(
+    'task',
+    where: 'board_id = ?',
+    whereArgs: [board_id],
+  );
 }

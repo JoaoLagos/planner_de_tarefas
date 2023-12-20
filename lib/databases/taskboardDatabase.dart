@@ -1,6 +1,16 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+/// #### Retorna o número total de TaskBoards no banco de dados.
+///
+/// Este método consulta o banco de dados para obter a lista de TaskBoards
+/// e retorna o número total de TaskBoards armazenadas.
+///
+/// ### Exemplo de uso:
+///
+/// ```dart
+/// int totalTaskBoards = await tamanho();
+/// ```
 Future<int> tamanho() async {
   List<Map<String, dynamic>> lista = await consultarDadosTaskBoard();
   
@@ -11,6 +21,17 @@ Future<int> tamanho() async {
   return qtdItens;
 }
 
+/// #### Retorna o número total de TaskBoards associadas a um usuário específico.
+///
+/// Este método consulta o banco de dados para obter a lista de TaskBoards
+/// associadas a um usuário específico e retorna o número total de TaskBoards
+/// para esse usuário.
+///
+/// ### Exemplo de uso:
+///
+/// ```dart
+/// int totalTaskBoardsDoUsuario = await tamanhoByUser(user_id);
+/// ```
 Future<int> tamanhoByUser(int user_id) async {
   List<Map<String, dynamic>> lista = await getInfoTaskBoardByUser(user_id);
   
@@ -20,8 +41,6 @@ Future<int> tamanhoByUser(int user_id) async {
 
   return qtdItens;
 }
-
-
 
 /// Função assíncrona que abre ou cria um banco de dados SQLite para o task board.
 ///
@@ -165,4 +184,48 @@ Future<void> limparBancoDeDadosTaskBoard() async {
       color INTEGER NOT NULL
     )
   ''');
+}
+
+/// #### Limpa todas as TaskBoards associadas a um usuário específico do banco de dados.
+///
+/// Este método exclui todas as TaskBoards associadas a um usuário específico
+/// do banco de dados. Utiliza a cláusula WHERE para filtrar as TaskBoards
+/// associadas ao usuário pelo ID.
+///
+/// ### Exemplo de uso:
+///
+/// ```dart
+/// await limparBancoDeDadosTaskBoardOfUser(user_id);
+/// ```
+Future<void> limparBancoDeDadosTaskBoardOfUser(int user_id) async {
+  final Database db = await abrirBancoDeDadosTaskBoard();
+
+  await db.delete(
+    'task_board',
+    where: 'user_id = ?',
+    whereArgs: [user_id],
+  );
+}
+
+/// #### Exclui uma TaskBoard do banco de dados pelo ID.
+///
+/// Este método exclui uma TaskBoard do banco de dados com base no ID especificado.
+/// Utiliza a cláusula WHERE para filtrar a TaskBoard pelo ID.
+///
+/// ### Exemplo de uso:
+///
+/// ```dart
+/// await deleteTaskBoardById(taskBoardId);
+/// ```
+Future<void> deleteTaskBoardById(int id) async {
+  // Abre o banco de dados
+  Database db = await abrirBancoDeDadosTaskBoard();
+
+  // Exclui o registro com o ID especificado da tabela task_board
+  await db.delete(
+    'task_board',
+    where: 'id = ?',
+    whereArgs: [id],
+  );
+
 }

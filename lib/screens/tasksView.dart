@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../databases/taskDatabase.dart'as task_bd;
+import '../databases/taskDatabase.dart' as task_bd;
+import '../databases/taskboardDatabase.dart' as taskboard_bd;
 import 'taskBoards.dart';
 
 class TasksView extends StatefulWidget {
@@ -29,6 +30,71 @@ class TasksViewState extends State<TasksView> {
     });
   }
 
+  /// Exibe um AlertDialog para confirmar a exclusão de uma TaskBoard.
+  ///
+  /// Este método exibe um AlertDialog com um título informativo e uma mensagem
+  /// indicando que todas as tarefas associadas à TaskBoard também serão excluídas.
+  /// O usuário tem a opção de cancelar a operação ou confirmar a exclusão.
+  ///
+  /// Ao confirmar a exclusão, a função `deleteTaskBoardAndTasks` é chamada para
+  /// realizar a exclusão da TaskBoard e de suas tarefas associadas.
+  /// Após a exclusão, o AlertDialog é fechado e a janela `tasksView` é substituída
+  /// por uma nova instância, utilizando a classe `TaskBoards`.
+  ///
+  /// ### Exemplo de uso:
+  ///
+  /// ```dart
+  /// await deleteTaskBoardAlert();
+  /// ```
+  Future<void> deleteTaskBoardAlert() async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Excluir TaskBoard'),
+          content: const Text('Tem certeza que deseja excluir esta TaskBoard? Todas as tarefas serão excluídas.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Fecha o AlertDialog
+              },
+              child: Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () async {
+                await deleteTaskBoardAndTasks(); 
+
+                // Fecha o AlertDialog
+                Navigator.of(context).pop();
+                // Fecha a janela tasksView
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  TaskBoards(user: widget.user)));
+              },
+              child: const Text('Excluir'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Exclui um TaskBoard e suas tarefas associadas do banco de dados.
+  ///
+  /// Este método realiza a exclusão de uma TaskBoard e suas tarefas associadas
+  /// do banco de dados. Utiliza os métodos `deleteTaskBoardById` (para excluir o TaskBoard) e 
+  /// `deleteAllTasksOfBoardId` (para excluir as tasks, tarafas, associadas ao TaskBoard) para executar as operações necessárias.
+  ///
+  /// ### Exemplo de uso:
+  ///
+  /// ```dart
+  /// await deleteTaskBoardAndTasks();
+  /// ```
+  Future<void> deleteTaskBoardAndTasks() async {
+    taskboard_bd.deleteTaskBoardById(widget.boardId);
+    task_bd.deleteAllTasksOfBoardId(widget.boardId);
+
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,9 +102,17 @@ class TasksViewState extends State<TasksView> {
         title: Text(widget.boardName),
         backgroundColor: Color(widget.cor), //usar cor do board
         leading: IconButton(
-    icon: const Icon(Icons.arrow_back, color: Colors.white), //arrow color based on the board color
-    onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  TaskBoards(user: widget.user))),
-      ),),
+          icon: const Icon(Icons.arrow_back, color: Colors.white), //arrow color based on the board color
+          onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  TaskBoards(user: widget.user))),
+        ),
+        actions: [
+          IconButton(
+            onPressed: deleteTaskBoardAlert,
+            icon: const Icon(Icons.delete)
+          )
+        ],
+      ),
+
       body: SingleChildScrollView(child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

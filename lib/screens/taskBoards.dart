@@ -68,8 +68,8 @@ class _TaskBoardsState extends State<TaskBoards> {
               leading: const Icon(Icons.home),
               title: const Text('Página Inicial'),
               onTap: () {
-                // Adicione a lógica que deve ser executada ao selecionar a opção do menu
-                Navigator.pop(context); // Fecha o Drawer
+                
+                Navigator.pop(context); 
               },
             ),
             
@@ -120,84 +120,48 @@ class _TaskBoardsState extends State<TaskBoards> {
       ),
 
       body: SingleChildScrollView(
-        child:Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
+        child:Center(
+          child:Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
 
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
 
-            Image.asset(
-              "assets/user.png",
-              height: 90,
-            ),
-
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-
-            Text(
-              "Bem-vindo, ${widget.user["name"]}",
-              style: const TextStyle(
-                fontSize: 20.0, 
-                fontWeight: FontWeight.bold, 
-                color: Colors.black, 
+              Image.asset(
+                "assets/user.png",
+                height: 90,
               ),
-            ),
 
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
 
-            
-            FutureBuilder<int>(
-              future: taskboard_bd.tamanhoByUser(widget.user["id"]),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return const Text('Erro ao carregar dados do banco de dados');
-                } else {
-                  int tamanho = snapshot.data ?? 0;
+              Text(
+                "Bem-vindo, ${widget.user["name"]}",
+                style: const TextStyle(
+                  fontSize: 20.0, 
+                  fontWeight: FontWeight.bold, 
+                  color: Colors.black, 
+                ),
+              ),
 
-                  return Column(
-                    children: [
-                      for (int i = 0; i < tamanho; i += 2)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            FutureBuilder<List<Map<String, dynamic>>>(
-                              future: taskboard_bd.getInfoTaskBoardByUser(widget.user["id"]),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return const CircularProgressIndicator();
-                                } else if (snapshot.hasError) {
-                                  return const Text('Erro ao carregar dados do board');
-                                } else {
-                                  // Verifique se a lista tem algum item antes de acessar o primeiro elemento
-                                  if (snapshot.data!.isNotEmpty && widget.user["id"] == snapshot.data![i]["user_id"]) {
-                                    Map<String, dynamic> boardData = snapshot.data![i];
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              
+              FutureBuilder<int>(
+                future: taskboard_bd.tamanhoByUser(widget.user["id"]),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return const Text('Erro ao carregar dados do banco de dados');
+                  } else {
+                    int tamanho = snapshot.data ?? 0;
 
-                                    return FutureBuilder<List<Map<String, dynamic>>>(future: task_bd.consultarDadosTask(boardData["id"]), builder:
-                                    (context, taskListSnapshot) {
-                                      if (taskListSnapshot.connectionState == ConnectionState.waiting) {
-                                        return const CircularProgressIndicator();
-                                      } else if (taskListSnapshot.hasError) {
-                                        return Text('Erro ao buscar tarefas: ${taskListSnapshot.error}');
-                                      } else {
-                                        List<Map<String, dynamic>> taskList = taskListSnapshot.data ?? [];
-                                        return cardWidget(
-                                          boardData["name"] ?? "",
-                                          boardData["icon"] ?? "error",
-                                          boardData["color"] ?? 0,
-                                          taskList,
-                                          boardData["id"],
-                                        );
-                                      }
-                                    });
-                                  } else {
-                                    return const Text('Nenhum dado encontrado');
-                                  }
-                                }
-                              },
-                            ),
-                            if (i + 1 < tamanho)
+                    return Column(
+                      children: [
+                        for (int i = 0; i < tamanho; i += 2)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
                               FutureBuilder<List<Map<String, dynamic>>>(
                                 future: taskboard_bd.getInfoTaskBoardByUser(widget.user["id"]),
                                 builder: (context, snapshot) {
@@ -207,11 +171,11 @@ class _TaskBoardsState extends State<TaskBoards> {
                                     return const Text('Erro ao carregar dados do board');
                                   } else {
                                     // Verifique se a lista tem algum item antes de acessar o primeiro elemento
-                                    if (snapshot.data!.isNotEmpty && widget.user["id"] == snapshot.data![i+1]["user_id"]) {
-                                      Map<String, dynamic> boardData = snapshot.data![i+1];
+                                    if (snapshot.data!.isNotEmpty && widget.user["id"] == snapshot.data![i]["user_id"]) {
+                                      Map<String, dynamic> boardData = snapshot.data![i];
 
                                       return FutureBuilder<List<Map<String, dynamic>>>(future: task_bd.consultarDadosTask(boardData["id"]), builder:
-                                          (context, taskListSnapshot) {
+                                      (context, taskListSnapshot) {
                                         if (taskListSnapshot.connectionState == ConnectionState.waiting) {
                                           return const CircularProgressIndicator();
                                         } else if (taskListSnapshot.hasError) {
@@ -223,7 +187,7 @@ class _TaskBoardsState extends State<TaskBoards> {
                                             boardData["icon"] ?? "error",
                                             boardData["color"] ?? 0,
                                             taskList,
-                                            boardData["id"]
+                                            boardData["id"],
                                           );
                                         }
                                       });
@@ -233,15 +197,52 @@ class _TaskBoardsState extends State<TaskBoards> {
                                   }
                                 },
                               ),
-                          ],
-                        ),
-                    ],
-                  );
-                }
-              },
-            ),
-          ],
-        ),
+                              if (i + 1 < tamanho)
+                                FutureBuilder<List<Map<String, dynamic>>>(
+                                  future: taskboard_bd.getInfoTaskBoardByUser(widget.user["id"]),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return const CircularProgressIndicator();
+                                    } else if (snapshot.hasError) {
+                                      return const Text('Erro ao carregar dados do board');
+                                    } else {
+                                      // Verifique se a lista tem algum item antes de acessar o primeiro elemento
+                                      if (snapshot.data!.isNotEmpty && widget.user["id"] == snapshot.data![i+1]["user_id"]) {
+                                        Map<String, dynamic> boardData = snapshot.data![i+1];
+
+                                        return FutureBuilder<List<Map<String, dynamic>>>(future: task_bd.consultarDadosTask(boardData["id"]), builder:
+                                            (context, taskListSnapshot) {
+                                          if (taskListSnapshot.connectionState == ConnectionState.waiting) {
+                                            return const CircularProgressIndicator();
+                                          } else if (taskListSnapshot.hasError) {
+                                            return Text('Erro ao buscar tarefas: ${taskListSnapshot.error}');
+                                          } else {
+                                            List<Map<String, dynamic>> taskList = taskListSnapshot.data ?? [];
+                                            return cardWidget(
+                                              boardData["name"] ?? "",
+                                              boardData["icon"] ?? "error",
+                                              boardData["color"] ?? 0,
+                                              taskList,
+                                              boardData["id"]
+                                            );
+                                          }
+                                        });
+                                      } else {
+                                        return const Text('Nenhum dado encontrado');
+                                      }
+                                    }
+                                  },
+                                ),
+                            ],
+                          ),
+                      ],
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+        )
       )
     );
   }
@@ -342,54 +343,21 @@ class _TaskBoardsState extends State<TaskBoards> {
     ));
   }
 
-  // Função para exibir o AlertDialog de pesquisa
-  Future<void> exibirDialogoPesquisa(BuildContext context) async {
-    TextEditingController controller = TextEditingController();
-    
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Pesquisar Tarefa'),
-          content: TextField(
-            controller: controller,
-            decoration: const InputDecoration(hintText: 'Nome da Tarefa'),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () {
-                // Aqui você pode acessar o nome da tarefa digitado usando controller.text
-                
-                Navigator.of(context).pop();
-              },
-              child: const Text('Pesquisar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   void abrirTelaPesquisa(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => Pesquisar(
-        onPesquisaConfirmada: (data) {
-          // Aqui você pode lidar com os resultados da pesquisa
-          
-          // Incluir aqui a lógica para exibir as tarefas correspondentes à pesquisa
-        },
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Pesquisar(
+          onPesquisaConfirmada: (data) {
+            // Aqui você pode lidar com os resultados da pesquisa
+            
+            // Incluir aqui a lógica para exibir as tarefas correspondentes à pesquisa
+          },
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
 Future<void> exibirDialogoInserirTarefa(BuildContext context) async {
   String nomeTarefa = ''; // Variável para armazenar o nome da nova tarefa
@@ -439,6 +407,7 @@ Future<void> exibirDialogoInserirTarefa(BuildContext context) async {
           TextButton(
             onPressed: () {
               // taskboard_bd.limparBancoDeDadosTaskBoard();
+              taskboard_bd.limparBancoDeDadosTaskBoardOfUser(widget.user["id"]);
               setState(() {
                 
               });
