@@ -1,3 +1,19 @@
+/// `completedTasksView.dart` - Visualização de Tarefas Concluídas.
+///
+/// Este arquivo contém a implementação da tela de visualização de tarefas concluídas, onde os usuários podem
+/// ver suas tarefas que foram marcadas como concluídas. A tela inclui uma tabela de expansão que exibe informações
+/// detalhadas sobre cada tarefa concluída, como título, data, início, fim, notas e estado de conclusão.
+///
+/// O widget é parte integrante do aplicativo Planner, que oferece recursos de gerenciamento de tarefas e
+/// organização. A visualização de tarefas concluídas é útil para os usuários revisarem as tarefas que já foram
+/// realizadas.
+///
+/// A classe `CompletedTasksView` (um StatefulWidget) inclui métodos como `updateTaskList` para atualizar a lista
+/// de tarefas, e a classe `TaskTable` (um StatefulWidget) é usada para construir a tabela de expansão.
+///
+/// A tela utiliza o pacote `taskDatabase.dart` para interagir com o banco de dados de tarefas e exibir as
+/// informações relevantes.
+
 import 'package:flutter/material.dart';
 import '../databases/taskDatabase.dart'as task_bd;
 import 'taskBoards.dart';
