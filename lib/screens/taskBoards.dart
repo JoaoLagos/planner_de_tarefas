@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 import 'pesquisar.dart';
 import 'login.dart';
@@ -131,7 +132,7 @@ class _TaskBoardsState extends State<TaskBoards> {
 
               Image.asset(
                 "assets/user.png",
-                height: 90,
+                height: 60,
               ),
 
               SizedBox(height: MediaQuery.of(context).size.height * 0.01),
@@ -139,11 +140,15 @@ class _TaskBoardsState extends State<TaskBoards> {
               Text(
                 "Bem-vindo, ${widget.user["name"]}",
                 style: const TextStyle(
-                  fontSize: 20.0, 
-                  fontWeight: FontWeight.bold, 
-                  color: Colors.black, 
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
               ),
+
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+
+              TableCalendar(firstDay: DateTime.utc(1970, 1, 1), focusedDay: DateTime.now() , lastDay: DateTime.utc(2038, 12, 31),),
 
               SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               
