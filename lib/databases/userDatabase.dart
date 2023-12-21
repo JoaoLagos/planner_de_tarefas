@@ -1,3 +1,14 @@
+/// Arquivo `userDatabase.dart` - Contém funções para operações no banco de dados relacionadas a usuários.
+///
+/// Este arquivo fornece funcionalidades como a abertura/criação do banco de dados, consulta de dados de usuários,
+/// inserção de novos usuários, consulta de informações de usuários por e-mail ou ID, e limpeza da tabela de usuários.
+///
+/// Todas as funções são assíncronas, refletindo a natureza de operações de banco de dados que podem levar algum tempo para serem concluídas.
+///
+/// O banco de dados possui uma tabela 'user' que armazena informações sobre os usuários, incluindo id, nome, e-mail e senha.
+
+/// O código usa o pacote `sqflite` para interagir com o SQLite, um banco de dados leve embutido em aplicativos Flutter.
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 

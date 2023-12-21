@@ -1,3 +1,17 @@
+/// Arquivo `taskBoardDatabase.dart` - Contém funções para operações no banco de dados relacionadas a Task Boards.
+///
+/// Este arquivo fornece funcionalidades para operações como a obtenção do número total de Task Boards,
+/// a obtenção do número total de Task Boards associadas a um usuário específico, abertura/criação do banco de dados,
+/// consulta de dados de Task Boards, inserção de novas Task Boards, consulta de informações de Task Boards por nome ou usuário,
+/// limpeza da tabela de Task Boards, exclusão de todas as Task Boards associadas a um usuário específico e exclusão de uma Task Board pelo ID.
+///
+/// Todas as funções são assíncronas, refletindo a natureza de operações de banco de dados que podem levar algum tempo para serem concluídas.
+///
+/// O banco de dados do Task Board possui uma tabela 'task_board' que armazena informações sobre as Task Boards,
+/// incluindo id, user_id, name, icon e color.
+///
+/// O código usa o pacote `sqflite` para interagir com o SQLite, um banco de dados leve embutido em aplicativos Flutter.
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 

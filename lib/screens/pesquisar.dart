@@ -1,3 +1,20 @@
+/// `pesquisar.dart` - Tela de Pesquisa de Tarefas por Data.
+///
+/// Este arquivo contém a implementação da tela de pesquisa de tarefas por data, onde os usuários podem
+/// selecionar uma data específica e visualizar as tarefas associadas a essa data. A tela inclui a seleção
+/// de data, um botão de pesquisa e exibe os resultados da pesquisa em uma lista de cartões.
+///
+/// O widget é parte integrante do aplicativo Planner, que oferece recursos de gerenciamento de tarefas e
+/// organização. A pesquisa por data é uma funcionalidade útil para os usuários acompanharem suas tarefas
+/// em datas específicas.
+///
+/// A classe `Pesquisar` (um StatefulWidget) inclui métodos como `_selectDate` para escolher uma data,
+/// `_buscarEAtualizarResultado` para realizar a pesquisa no banco de dados e atualizar os resultados,
+/// e `widgetResultadoPesquisa` para construir o widget de resultados usando um FutureBuilder.
+///
+/// A tela utiliza o pacote `taskDatabase.dart` para interagir com o banco de dados de tarefas e exibir
+/// os resultados da pesquisa em uma lista de cartões.
+
 import 'package:flutter/material.dart';
 import '../databases/taskDatabase.dart' as task_db;
 

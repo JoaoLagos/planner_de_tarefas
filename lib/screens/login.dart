@@ -1,3 +1,25 @@
+/// `login.dart` - Tela de login para autenticação de usuários.
+///
+/// Este arquivo contém a implementação da tela de login, onde os usuários podem
+/// inserir suas credenciais (e-mail e senha) para autenticação. A tela inclui
+/// campos de entrada de texto para e-mail e senha, botão de login, e opção para
+/// criar uma nova conta. A autenticação é realizada verificando as credenciais
+/// no banco de dados.
+///
+/// Este widget é parte integrante do aplicativo Planner, que oferece recursos
+/// de gerenciamento de tarefas e organização. O login é uma etapa crucial para
+/// acessar os recursos personalizados de cada usuário.
+///
+/// O arquivo contém a classe `Login` (um StatefulWidget) e sua respectiva
+/// implementação de estado `_LoginState`. Além disso, inclui funções assíncronas
+/// relacionadas ao processo de login, como `_login`, `_autentication`, e
+/// `_showLoginErrorAlertDialog`.
+///
+/// O código utiliza o pacote `userDatabase.dart` para interagir com o banco
+/// de dados de usuários. Além disso, faz navegação entre telas, direcionando
+/// os usuários para a tela de cadastro (`Cadastro`) ou a tela principal (`TaskBoards`).
+///
+
 import 'package:flutter/material.dart';
 
 import '../databases/userDatabase.dart' as user_db;

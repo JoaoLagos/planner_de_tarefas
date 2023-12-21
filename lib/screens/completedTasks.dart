@@ -17,7 +17,7 @@ class CompletedTasksViewState extends State<CompletedTasksView> {
   static const Color roxo = Color(0xFF6354B2);
   final GlobalKey<TaskTableState> _taskTableKey = GlobalKey<TaskTableState>();
 
-
+  
   Future<void> updateTaskList() async{
     // TODO: query baseada no user taskList = await task_bd.consultarDadosTask(user);
     List<Map<String, dynamic>> taskList = [];

@@ -1,3 +1,20 @@
+/// `taskBoards.dart` - Tela principal que exibe os quadros de tarefas.
+///
+/// Este arquivo contém a implementação da tela principal (`TaskBoards`), que exibe
+/// os quadros de tarefas do usuário. Os quadros incluem informações sobre a categoria
+/// de tarefas, como nome, ícone, cor e a quantidade de tarefas associadas. A tela também
+/// fornece um menu de navegação lateral (drawer) para acessar outras seções do aplicativo.
+///
+/// O widget é parte integrante do aplicativo Planner, que oferece recursos de gerenciamento
+/// de tarefas e organização. A tela principal fornece uma visão geral dos quadros de tarefas
+/// e permite a navegação para outras áreas, como pesquisar tarefas, visualizar tarefas recentes,
+/// visualizar tarefas concluídas e sair do aplicativo.
+///
+/// O arquivo contém a classe `TaskBoards` (um StatefulWidget) e sua respectiva implementação
+/// de estado `_TaskBoardsState`. A classe inclui métodos para construir a interface do usuário,
+/// abrir a tela de pesquisa, exibir o diálogo para inserir uma nova tarefa e criar widgets de
+/// cartão para exibir informações sobre os quadros de tarefas.
+
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';

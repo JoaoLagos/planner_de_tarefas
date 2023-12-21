@@ -1,3 +1,22 @@
+/// `cadastro.dart` - Tela de cadastro para novos usuários.
+///
+/// Este arquivo contém a implementação da tela de cadastro, onde novos usuários podem
+/// inserir suas informações (nome de usuário, e-mail, senha) para criar uma conta. A tela
+/// inclui campos de entrada de texto para nome de usuário, e-mail, senha e confirmação de senha,
+/// bem como um botão para realizar o cadastro.
+///
+/// O widget é parte integrante do aplicativo Planner, que oferece recursos de gerenciamento
+/// de tarefas e organização. O cadastro é uma etapa crucial para que os usuários acessem
+/// os recursos personalizados do aplicativo.
+///
+/// O arquivo contém a classe `Cadastro` (um StatefulWidget) e sua respectiva implementação
+/// de estado `_CadastroState`. Ele utiliza os pacotes `userDatabase.dart` e `taskboardDatabase.dart`
+/// para interagir com os bancos de dados de usuários e quadros de tarefas, respectivamente.
+///
+/// A classe `_CadastroState` inclui funções como `_register` para realizar o processo de cadastro,
+/// e `_showAlertDialog` para exibir alertas informativos. A verificação de formato de e-mail
+/// e senha é realizada usando expressões regulares.
+
 import 'package:flutter/material.dart';
 import '../databases/userDatabase.dart' as user_db;
 import '../databases/taskboardDatabase.dart' as taskboard_db;

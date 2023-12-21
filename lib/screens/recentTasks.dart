@@ -1,3 +1,19 @@
+/// `recentTasksView.dart` - Visualização de Tarefas Recentes.
+///
+/// Este arquivo contém a implementação da tela de visualização de tarefas recentes, onde os usuários podem
+/// ver suas tarefas dos últimos 7 dias. A tela inclui uma tabela de expansão que exibe informações detalhadas
+/// sobre cada tarefa, como título, data, início, fim, notas e estado de conclusão.
+///
+/// O widget é parte integrante do aplicativo Planner, que oferece recursos de gerenciamento de tarefas e
+/// organização. A visualização de tarefas recentes é útil para os usuários acompanharem suas atividades mais
+/// recentes.
+///
+/// A classe `RecentTasksView` (um StatefulWidget) inclui métodos como `updateTaskList` para atualizar a lista
+/// de tarefas, e a classe `TaskTable` (um StatefulWidget) é usada para construir a tabela de expansão.
+///
+/// A tela utiliza o pacote `taskDatabase.dart` para interagir com o banco de dados de tarefas e exibir as
+/// informações relevantes.
+
 import 'package:flutter/material.dart';
 import '../databases/taskDatabase.dart'as task_bd;
 import 'taskBoards.dart';

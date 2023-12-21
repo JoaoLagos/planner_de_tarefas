@@ -1,3 +1,17 @@
+/// Arquivo `taskDatabase.dart` - Contém funções para operações no banco de dados relacionadas a Tarefas.
+///
+/// Este arquivo fornece funcionalidades para operações como abertura/criação do banco de dados de Tarefas,
+/// consulta de dados de Tarefas, inserção de novas Tarefas, consulta de informações de Tarefas por título ou data,
+/// limpeza da tabela de Tarefas, alteração do estado de conclusão de uma Tarefa, exclusão de uma Tarefa pelo ID
+/// e exclusão de todas as Tarefas associadas a um TaskBoard.
+///
+/// Todas as funções são assíncronas, refletindo a natureza de operações de banco de dados que podem levar algum tempo para serem concluídas.
+///
+/// O banco de dados de Tarefas possui uma tabela 'task' que armazena informações sobre as Tarefas,
+/// incluindo id, user_id, board_id, title, note, date, startTime, endTime e isCompleted.
+///
+/// O código usa o pacote `sqflite` para interagir com o SQLite, um banco de dados leve embutido em aplicativos Flutter.
+
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';

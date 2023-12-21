@@ -1,3 +1,24 @@
+/// `taskView.dart` - Visualização de Tarefas para uma TaskBoard Específica.
+///
+/// Este arquivo contém a implementação da visualização de tarefas, onde os usuários podem criar,
+/// visualizar, editar e excluir tarefas associadas a uma TaskBoard específica. A tela exibe o nome
+/// da TaskBoard no topo e lista as tarefas disponíveis em um formato expansível.
+///
+/// O widget é parte integrante do aplicativo Planner, que oferece recursos de gerenciamento de tarefas
+/// e organização. A visualização de tarefas é essencial para que os usuários interajam efetivamente
+/// com suas tarefas e mantenham uma visão clara das atividades associadas a uma TaskBoard específica.
+///
+/// O arquivo contém a classe `TasksView` (um StatefulWidget) e sua implementação de estado `TasksViewState`.
+/// O código inclui métodos como `updateTaskList` para atualizar a lista de tarefas exibida, `deleteTaskBoardAlert`
+/// para exibir um diálogo de confirmação ao excluir uma TaskBoard, e `deleteTaskBoardAndTasks` para realizar
+/// a exclusão efetiva do banco de dados.
+///
+/// A visualização de tarefas inclui um botão para criar novas tarefas, uma tabela expansível para exibir
+/// as tarefas existentes e opções para retornar à visualização de TaskBoards ou excluir a TaskBoard atual.
+///
+/// O widget utiliza os pacotes `taskDatabase.dart` e `taskboardDatabase.dart` para interagir com os bancos
+/// de dados de tarefas e TaskBoards, respectivamente.
+
 import 'package:flutter/material.dart';
 import '../databases/taskDatabase.dart' as task_bd;
 import '../databases/taskboardDatabase.dart' as taskboard_bd;
@@ -22,7 +43,7 @@ class TasksViewState extends State<TasksView> {
   final GlobalKey<TaskTableState> _taskTableKey = GlobalKey<TaskTableState>();
 
 
-  Future<void> updateTaskList() async{
+  Future<void> updateTaskList() async {
     List<Map<String, dynamic>> taskList = await task_bd.consultarDadosTask(widget.boardId);
     setState(() {
       widget.taskList = taskList;
