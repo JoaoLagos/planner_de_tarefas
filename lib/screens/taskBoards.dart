@@ -88,20 +88,20 @@ class _TaskBoardsState extends State<TaskBoards> {
             ListTile(
               leading: const Icon(Icons.schedule),
               title: const Text('Tarefas Recentes'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context); // Fecha o Drawer
                 // TODO: query baseada no user taskList = await task_bd.consultarDadosTask(user);
-                List<Map<String, dynamic>> taskList =  [];
+                List<Map<String, dynamic>> taskList =  await task_bd.consultarDadosTaskRecentes(widget.user["id"]);
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  RecentTasksView(taskList: taskList, user: widget.user)));
               },
             ),
             ListTile(
               leading: const Icon(Icons.done),
               title: const Text('Tarefas Concluídas'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context); // Fecha o Drawer
                 // TODO: query baseada no user taskList = await task_bd.consultarDadosTask(user);
-                List<Map<String, dynamic>> taskList =  [];
+                List<Map<String, dynamic>> taskList =  await task_bd.consultarDadosTaskConcluidas(widget.user["id"]);
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  CompletedTasksView(taskList: taskList, user: widget.user)));
               },
             ),
