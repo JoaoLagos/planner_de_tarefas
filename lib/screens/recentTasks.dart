@@ -23,7 +23,7 @@ class RecentTasksViewState extends State<RecentTasksView> {
     List<Map<String, dynamic>> taskList =  [];
     setState(() {
       widget.taskList = taskList;
-      _taskTableKey.currentState?.updateTaskList(List.generate(taskList.length, (index) => false));
+      _taskTableKey.currentState?.updateTaskList(List.generate(taskList.length, (index) => false), taskList.map((task) => task["isCompleted"] == 1).toList());
     });
   }
 
@@ -81,9 +81,10 @@ class TaskTableState extends State<TaskTable> {
     }
   }
 
-  void updateTaskList(List<bool> newList){
+  void updateTaskList(List<bool> newList, List<bool> newCompletedList){
     setState(() {
       _isOpen = newList;
+      isCheckedList = newCompletedList;
     });
   }
 

@@ -26,7 +26,7 @@ class TasksViewState extends State<TasksView> {
     List<Map<String, dynamic>> taskList = await task_bd.consultarDadosTask(widget.boardId);
     setState(() {
       widget.taskList = taskList;
-      _taskTableKey.currentState?.updateTaskList(List.generate(taskList.length, (index) => false));
+      _taskTableKey.currentState?.updateTaskList(List.generate(taskList.length, (index) => false), taskList.map((task) => task["isCompleted"] == 1).toList());
     });
   }
 
@@ -91,8 +91,6 @@ class TasksViewState extends State<TasksView> {
   Future<void> deleteTaskBoardAndTasks() async {
     taskboard_bd.deleteTaskBoardById(widget.boardId);
     task_bd.deleteAllTasksOfBoardId(widget.boardId);
-
-    
   }
 
   @override
@@ -100,9 +98,9 @@ class TasksViewState extends State<TasksView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.boardName),
-        backgroundColor: Color(widget.cor), //usar cor do board
+        backgroundColor: Color(widget.cor),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white), //arrow color based on the board color
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  TaskBoards(user: widget.user))),
         ),
         actions: [
@@ -391,9 +389,10 @@ class TaskTableState extends State<TaskTable> {
     }
   }
 
-  void updateTaskList(List<bool> newList){
+  void updateTaskList(List<bool> newOpenList, List<bool> newCompletedList){
     setState(() {
-      _isOpen = newList;
+      _isOpen = newOpenList;
+      isCheckedList = newCompletedList;
     });
   }
 
