@@ -64,9 +64,9 @@ Future<List<Map<String, dynamic>>> consultarDadosTask(int boardId) async {
   return await db.query('task', where: 'board_id = ?', whereArgs: [boardId]);
 }
 
-Future<List<Map<String, dynamic>>> consultarDadosTaskConcluidas(int boardId) async {
+Future<List<Map<String, dynamic>>> consultarDadosTaskConcluidas(int userId) async {
   final Database db = await abrirBancoDeDadosTask();
-  return await db.query('task', where: 'board_id = ? AND isCompleted = ?', whereArgs: [boardId, 1]);
+  return await db.query('task', where: 'user_id = ? AND isCompleted = ?', whereArgs: [userId, 1]);
 }
 
 Future<List<Map<String, dynamic>>> consultarDadosTaskRecentes(int user_id) async {
