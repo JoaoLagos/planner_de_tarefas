@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -47,6 +48,33 @@ Future<Database> abrirBancoDeDadosTask() async {
 Future<List<Map<String, dynamic>>> consultarDadosTask(int boardId) async {
   final Database db = await abrirBancoDeDadosTask();
   return await db.query('task', where: 'board_id = ?', whereArgs: [boardId]);
+}
+
+Future<List<Map<String, dynamic>>> consultarDadosTaskConcluidas(int boardId) async {
+  final Database db = await abrirBancoDeDadosTask();
+  return await db.query('task', where: 'board_id = ? AND isCompleted = ?', whereArgs: [boardId, 1]);
+}
+
+Future<List<Map<String, dynamic>>> consultarDadosTaskRecentes(int user_id) async {
+  final Database db = await abrirBancoDeDadosTask();
+
+  // Calculando a data de hoje e a data daqui a 7 dias
+  final DateTime hoje = DateTime.now();
+  final DateTime dataSeteDiasFrente = hoje.add(Duration(days: 7));
+
+  // Formatando as datas para o formato armazenado no banco de dados (YYYY-MM-DD)
+  final DateFormat formatadorData = DateFormat('yyyy-MM-dd');
+  final String dataFormatadaHoje = formatadorData.format(hoje);
+  final String dataFormatadaSeteDiasFrente = formatadorData.format(dataSeteDiasFrente);
+
+
+  // Consulta usando o intervalo de datas e o user_id
+  return await db.query(
+    'task',
+    where: 'user_id = ? AND date BETWEEN ? AND ?',
+    whereArgs: [user_id, dataFormatadaHoje, dataFormatadaSeteDiasFrente],
+  );
+  
 }
 
 /// Função assíncrona que insere uma nova tarefa no banco de dados.
