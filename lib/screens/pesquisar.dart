@@ -58,7 +58,7 @@ class _PesquisarState extends State<Pesquisar> {
           //mainAxisAlignment: MainAxisAlignment.center,
           //crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 16), // Espaçamento entre os botões e o texto
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center, 
               children: [
@@ -70,7 +70,7 @@ class _PesquisarState extends State<Pesquisar> {
                 ElevatedButton(
                   onPressed: () => _selectDate(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: roxo, // Altere para a cor desejada
+                    backgroundColor: roxo, 
                   ),
                   child: Text(
                     '${selectedDay ?? 'DD'}/${selectedMonth ?? 'MM'}/${selectedYear ?? 'AAAA'}',
@@ -79,7 +79,7 @@ class _PesquisarState extends State<Pesquisar> {
                 ),
               ]
             ),
-            const SizedBox(height: 16), // Espaçamento entre os botões e o texto
+            const SizedBox(height: 16), 
             ElevatedButton(
               onPressed: () {
                 if (selectedYear != null && selectedMonth != null && selectedDay != null) {
@@ -91,7 +91,7 @@ class _PesquisarState extends State<Pesquisar> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,  // Altere para a cor desejada
+                backgroundColor: Colors.green,  
               ),
               
               child: const Padding(
@@ -132,31 +132,26 @@ class _PesquisarState extends State<Pesquisar> {
    Future<void> _buscarEAtualizarResultado(BuildContext context, int? ano, int? mes, int? dia) async {
     String date = [ano, mes, dia].join('-');
 
-    // Faz a consulta
     List<Map<String, dynamic>> resultados = await task_db.buscarTasksPorData(date);
 
     setState(() {
-      // Atualiza o widget do resultado com o novo FutureBuilder
       _resultadoWidget = widgetResultadoPesquisa(resultados);
     });
   }
 
   Widget widgetResultadoPesquisa(List<Map<String, dynamic>> resultados) {
-    
     //String date = [ano, mes, dia].join('-');
     
-    
-
     //TODO:
     return FutureBuilder<List<Map<String, dynamic>>>(
-    future: Future.value(resultados), // Usa Future.value para um futuro já resolvido
+    future: Future.value(resultados), 
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
-        return CircularProgressIndicator(); // Exibe um indicador de carregamento enquanto aguarda a conclusão da consulta
+        return const CircularProgressIndicator(); 
       } else if (snapshot.hasError) {
-        return Text('Erro ao carregar os dados'); // Exibe uma mensagem de erro, caso ocorra algum problema
+        return const Text('Erro ao carregar os dados'); 
       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-        return Text('Nenhum resultado encontrado'); // Se não houver dados ou a lista estiver vazia
+        return const Text('Nenhum resultado encontrado'); 
       } else {
         List<Map<String, dynamic>> resultados = snapshot.data!;
 
@@ -165,52 +160,51 @@ class _PesquisarState extends State<Pesquisar> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20), // Espaçamento entre o botão e a lista de resultados
+            const SizedBox(height: 20), 
             const Text(
               'Resultados:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 10), // Espaçamento entre o texto "Resultados" e a lista
+            const SizedBox(height: 10), 
 
-            // Lista de resultados exibida após a pesquisa
             Expanded(
               child: ListView.builder(
                 shrinkWrap: true,
                 itemCount: resultados.length,
                 itemBuilder: (BuildContext context, int index) {
                   Map<String, dynamic> item = resultados[index];
-                  String title = item['title'] ?? ''; // Obtendo o título da tarefa
-                  String note = item['note'] ?? ''; // Obtendo a nota da tarefa
-                  String date = item['date'] ?? ''; // Obtendo a data da tarefa
-                  String startTime = item['startTime'] ?? ''; // Obtendo o horário de início da tarefa
-                  String endTime = item['endTime'] ?? ''; // Obtendo o horário de término da tarefa
+                  String title = item['title'] ?? ''; 
+                  String note = item['note'] ?? ''; 
+                  String date = item['date'] ?? ''; 
+                  String startTime = item['startTime'] ?? ''; 
+                  String endTime = item['endTime'] ?? ''; 
 
 
                   return Card(
-                    elevation: 3, // Adiciona sombra ao card
-                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 4), // Espaçamento entre os cards
+                    elevation: 3, 
+                    margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4), 
                     child: ListTile(
                           title: Text(
                             title,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 4),
+                            padding: const EdgeInsets.symmetric(vertical: 4),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(note),
-                                SizedBox(height: 4),
+                                const SizedBox(height: 4),
                                 Text('Data: $date'),
-                                SizedBox(height: 4),
+                                const SizedBox(height: 4),
                                 Text('Inicio: $startTime'),
-                                SizedBox(height: 4),
+                                const SizedBox(height: 4),
                                 Text('Término: $endTime'),
                               ],
                             ),
                           ),
                           onTap: () {
-                            // Ação ao clicar no item
+                            
                           },
                         ),
 

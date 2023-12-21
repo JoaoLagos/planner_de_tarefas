@@ -77,17 +77,14 @@ class TasksViewState extends State<TasksView> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Fecha o AlertDialog
+                Navigator.of(context).pop(); 
               },
               child: Text('Cancelar'),
             ),
             TextButton(
               onPressed: () async {
                 await deleteTaskBoardAndTasks(); 
-
-                // Fecha o AlertDialog
                 Navigator.of(context).pop();
-                // Fecha a janela tasksView
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  TaskBoards(user: widget.user)));
               },
               child: const Text('Excluir'),

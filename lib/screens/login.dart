@@ -339,16 +339,13 @@ class _LoginState extends State<Login> {
     String email = emailController.text;
     String password = passwordController.text;
 
-    // Obtém informações do usuário do banco de dados
     List<Map<String, dynamic>> infoUser = await user_db.getInfoUser(email);
 
-    // Verifica se as credenciais são válidas. Sendo válida, variável user recebe o nome do usuário  e a função retorna true
     if(_autentication(infoUser, password)==true) {
       user = infoUser[0];
       return true;
     }
 
-    // Exibe um alerta de erro em caso de credenciais inválidas e retorna false
     _showLoginErrorAlertDialog();
     return false;
   }
@@ -399,15 +396,15 @@ class _LoginState extends State<Login> {
   ///     de `BuildContext` no local de chamada.
   void _showLoginErrorAlertDialog() {
   showDialog(
-    context: context, // context deve ser fornecido a partir de onde você está chamando esta função
+    context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         title: const Text("Erro de Login"),
-        content: Text("As credenciais fornecidas são inválidas. Tente novamente."),
+        content: const Text("As credenciais fornecidas são inválidas. Tente novamente."),
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(context); // Feche o AlertDialog
+              Navigator.pop(context); 
             },
             child: const Text("OK"),
           ),

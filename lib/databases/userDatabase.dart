@@ -6,7 +6,6 @@
 /// Todas as funções são assíncronas, refletindo a natureza de operações de banco de dados que podem levar algum tempo para serem concluídas.
 ///
 /// O banco de dados possui uma tabela 'user' que armazena informações sobre os usuários, incluindo id, nome, e-mail e senha.
-
 /// O código usa o pacote `sqflite` para interagir com o SQLite, um banco de dados leve embutido em aplicativos Flutter.
 
 import 'package:sqflite/sqflite.dart';
@@ -93,50 +92,39 @@ Future<void> inserirDados(String nome, String email, String senha) async {
 /// var infoUsuario = await getInfoUser("joao@email.com");
 /// ```
 Future<List<Map<String, dynamic>>> getInfoUser(String email) async {
-  // Abre o banco de dados
   final Database db = await abrirBancoDeDados();
 
-  // Lista que irá armazenar o resultado da consulta
   List<Map<String, dynamic>> result;
 
   try {
-    // Consulta o banco de dados para verificar se o e-mail já existe na tabela 'user'
     result = await db.query(
       'user',
-      where: 'email = ?', // Condição para a consulta
-      whereArgs: [email], // Valor a ser comparado com a condição
+      where: 'email = ?', 
+      whereArgs: [email], 
     );
   } catch (e) {
-    // Trate erros, se houver
-    print('Erro ao consultar o banco de dados: $e');
-    result = []; // Retorna uma lista vazia em caso de erro
+    
+    result = []; 
   }
 
-  // Retorna a lista resultante (pode conter 0 ou mais itens)
   return result;
 }
 
 Future<List<Map<String, dynamic>>> getInfoUserById(int user_id) async {
-  // Abre o banco de dados
   final Database db = await abrirBancoDeDados();
 
-  // Lista que irá armazenar o resultado da consulta
   List<Map<String, dynamic>> result;
 
   try {
-    // Consulta o banco de dados para verificar se o e-mail já existe na tabela 'user'
     result = await db.query(
       'user',
-      where: 'id = ?', // Condição para a consulta
-      whereArgs: [user_id], // Valor a ser comparado com a condição
+      where: 'id = ?', 
+      whereArgs: [user_id], 
     );
   } catch (e) {
-    // Trate erros, se houver
-    print('Erro ao consultar o banco de dados: $e');
-    result = []; // Retorna uma lista vazia em caso de erro
+    result = []; 
   }
 
-  // Retorna a lista resultante (pode conter 0 ou mais itens)
   return result;
 }
 
@@ -151,10 +139,8 @@ Future<List<Map<String, dynamic>>> getInfoUserById(int user_id) async {
 Future<void> limparBancoDeDados() async {
   final Database db = await abrirBancoDeDados();
 
-  // Substitua 'user' pelo nome da sua tabela
   await db.execute('DROP TABLE IF EXISTS user');
 
-  // Agora, você pode recriar a tabela usando a mesma lógica do método abrirBancoDeDados
   await db.execute('''
     CREATE TABLE user (
       id INTEGER PRIMARY KEY AUTOINCREMENT,

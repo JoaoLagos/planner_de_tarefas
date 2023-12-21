@@ -76,7 +76,7 @@ Future<List<Map<String, dynamic>>> consultarDadosTaskRecentes(int user_id) async
   final DateTime hoje = DateTime.now();
   final DateTime dataSeteDiasFrente = hoje.add(Duration(days: 7));
 
-  // Formatando as datas para o formato armazenado no banco de dados (YYYY-MM-DD)
+  // Formata as datas para o formato armazenado no banco de dados (YYYY-MM-DD)
   final DateFormat formatadorData = DateFormat('yyyy-MM-dd');
   final String dataFormatadaHoje = formatadorData.format(hoje);
   final String dataFormatadaSeteDiasFrente = formatadorData.format(dataSeteDiasFrente);
@@ -157,7 +157,6 @@ Future<List<Map<String, dynamic>>> getInfoTask(String titulo) async {
       whereArgs: [titulo],
     );
   } catch (e) {
-    print('Erro ao consultar o banco de dados de tarefas: $e');
     result = [];
   }
 
@@ -173,8 +172,7 @@ Future<List<Map<String, dynamic>>> buscarTasksPorData(String date) async {
       SELECT * FROM task
       WHERE date = ?
     ''', [date]);
-  } catch (e) {
-    print('Erro ao consultar o banco de dados de tarefas: $e');    
+  } catch (e) {   
     result = [];
     throw e;
   }
@@ -233,7 +231,6 @@ Future<void> changeTaskState(bool value, int id) async {
       whereArgs: [id]
     );
   } catch (e) {
-    print('Erro ao consultar o banco de dados de tarefas: $e');
   }
 }
 

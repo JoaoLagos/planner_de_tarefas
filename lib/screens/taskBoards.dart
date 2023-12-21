@@ -343,8 +343,8 @@ class _TaskBoardsState extends State<TaskBoards> {
                   decoration: const BoxDecoration(
                     color: Color.fromRGBO(255, 255, 255, 0.498),
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20.0),  // Raio na parte inferior esquerda
-                      bottomRight: Radius.circular(20.0), // Raio na parte inferior direita
+                      bottomLeft: Radius.circular(20.0),  
+                      bottomRight: Radius.circular(20.0), 
                     ),
                   ),
                   child: Row(
@@ -377,9 +377,7 @@ class _TaskBoardsState extends State<TaskBoards> {
       MaterialPageRoute(
         builder: (context) => Pesquisar(
           onPesquisaConfirmada: (data) {
-            // Aqui você pode lidar com os resultados da pesquisa
             
-            // Incluir aqui a lógica para exibir as tarefas correspondentes à pesquisa
           },          
         ),
       ),
@@ -387,9 +385,9 @@ class _TaskBoardsState extends State<TaskBoards> {
   }
 
 Future<void> exibirDialogoInserirTarefa(BuildContext context) async {
-  String nomeTarefa = ''; // Variável para armazenar o nome da nova tarefa
-  Color corSelecionada = Colors.blue; // Valor padrão, você pode definir a cor padrão desejada
-  IconData? iconeSelecionado = Icons.error; // Valor padrão, você pode definir o ícone padrão desejado
+  String nomeTarefa = ''; 
+  Color corSelecionada = Colors.blue; // Valor padrão
+  IconData? iconeSelecionado = Icons.error; // Valor padrão
   String stringIconeSelecionado = String.fromCharCode(iconeSelecionado.codePoint);
 
 
@@ -460,10 +458,8 @@ Future<void> exibirDialogoInserirTarefa(BuildContext context) async {
           TextButton(
             onPressed: () {
               taskboard_bd.inserirDadosTaskBoard(nomeTarefa, stringIconeSelecionado, widget.user["id"], corSelecionada.value);
-              print('Nome da nova tarefa: $nomeTarefa');
 
               setState(() {
-                
               });
               Navigator.pop(context);
             },

@@ -27,10 +27,7 @@ import 'package:path/path.dart';
 /// ```
 Future<int> tamanho() async {
   List<Map<String, dynamic>> lista = await consultarDadosTaskBoard();
-  
   int qtdItens = lista.length;
-  print(lista);
-  print(qtdItens);
 
   return qtdItens;
 }
@@ -48,10 +45,7 @@ Future<int> tamanho() async {
 /// ```
 Future<int> tamanhoByUser(int user_id) async {
   List<Map<String, dynamic>> lista = await getInfoTaskBoardByUser(user_id);
-  
   int qtdItens = lista.length;
-  print(lista);
-  print(qtdItens);
 
   return qtdItens;
 }
@@ -147,11 +141,8 @@ Future<List<Map<String, dynamic>>> getInfoTaskBoard(String nome) async {
       whereArgs: [nome],
     );
   } catch (e) {
-    print('Erro ao consultar o banco de dados do task board: $e');
     result = [];
   }
-
-  print(result);
 
   return result;
 }
@@ -167,11 +158,8 @@ Future<List<Map<String, dynamic>>> getInfoTaskBoardByUser(int user_id) async {
       whereArgs: [user_id],
     );
   } catch (e) {
-    print('Erro ao consultar o banco de dados do task board: $e');
     result = [];
   }
-
-  print(result);
 
   return result;
 }
