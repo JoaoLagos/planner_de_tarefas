@@ -306,13 +306,6 @@ class _LoginState extends State<Login> {
                     ],
                   ),
                 ),
-
-                ElevatedButton( // Colocado somente para limpar o banco de dados, pois ao fechar a aplicação os dados continuam lá, não resetam
-                        onPressed: () {
-                          user_db.limparBancoDeDados();
-                        }, 
-                        child: const Text("Limpar BD")
-                      )
               ],
             ),
           ),
