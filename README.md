@@ -9,11 +9,11 @@
 Um aplicativo de Planner de Tarefas em Flutter desenvolvido como projeto para a disciplina de Laboratório de Programação para Dispositivos Móveis, na UFF - Universidade Federal Fluminense.
 
 <br>
-<div style="display: inline_block; text-align: center;">
-    <img src="./screenshots/tela_inicial.png" alt="screenshot1">
-    <hr>
-    <img src="./screenshots/cadastro_tarefas.png" alt="screenshot2">
-</div>
+<p align="center">
+  <img src="./screenshots/screenshot1.png" alt="screenshot1">
+  <img src="./screenshots/screenshot2.png" alt="screenshot2">
+</p>
+<hr>
 
 ## 🚀 Funcionalidades Principais
 
